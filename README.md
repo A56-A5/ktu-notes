@@ -1,0 +1,117 @@
+# KTU Notes
+
+A personal semester notebook for **APJ Abdul Kalam Technological University, B.Tech Computer Science and Engineering, 2024 Scheme, Semester 5**.
+
+It opens with the five requested subjects, four modules and a syllabus entry each, and every node is editable. The visual language is deliberately scrapbook-like: torn paper, masking tape, binder rings, ruled note sheets and handwritten headings. This is a working local-first application, not a mockup.
+
+## What it does
+
+- **Home page** with the five subjects (`PECST525 Data Mining`, `PCCST501 Computer Networks`, `PCCST502 DAA`, `PCCDT503 Data Analytics`, `PCCDT504 Big Data Processing`), search, pinned subjects, recently opened items, note/module counts and study progress. Data Mining is pinned and first.
+- **Unlimited recursive tree** of semesters, subjects, folders, modules, topics, subtopics, notes and resources. Add, rename, edit, delete, duplicate, move, reorder, expand/collapse and drag-and-drop. Breadcrumbs everywhere.
+- **Rich-text notes** (TipTap): bold/italic/underline/strike/highlight, headings, lists, checklists, tables, quotes, dividers, links, inline code, highlighted code blocks, LaTeX inline and block equations.
+- **Images**: upload, paste, drag/drop, resize, align, caption, remove. Stored as blobs (never Base64 in the database) and referenced as `asset:<id>`.
+- **Local-first persistence** in IndexedDB, with a localStorage fallback. Data survives refresh and restart. A clear banner says when the app is local-only.
+- **Optional Supabase cloud sync** with per-user RLS, a private storage bucket and a recursive Postgres schema.
+- **JSON and ZIP import/export** with validation, hierarchy preview, merge or replace-by-ID, collision detection and progress summaries. ZIP exports include images and work as portable restores.
+- **Responsive layout**: desktop binder sidebar, mobile drawer, full-screen editing, readable typography, empty/loading/error states, toasts and confirmation dialogs.
+- **Default content is not immutable**: every syllabus note, module, topic and subtopic can be changed or deleted. “Restore defaults” re-adds only missing entries without touching your edits.
+
+## Run locally
+
+```bash
+npm install --legacy-peer-deps   # TipTap peer versions need this flag
+npm run dev                      # http://localhost:3000
+```
+
+Without Supabase variables the app is in local mode and stores everything in the browser. Clear site data and the local notebook is gone — use **Export → ZIP + images** for backups.
+
+## Supabase setup (optional cloud sync)
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. **Authentication → Providers → Email**: enable it. For a fast personal setup, disable “Confirm email” (or confirm the address after sign-up).
+3. Open **SQL Editor → New query**, paste all of `supabase/schema.sql` and run it. It creates the tables, RLS policies, indexes and the private `note-assets` bucket.
+4. Copy `.env.example` to `.env.local` and fill:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable or anon key>
+   ```
+   Only the publishable/anon key belongs in the browser. Never put the service-role key in a `NEXT_PUBLIC_` variable.
+5. Restart `npm run dev`. Click the storage pill in the header, create an account and choose which copy to keep. After that decision, edits push automatically ~1.6 s after they settle, and images upload to the user's private folder.
+
+**Sync model:** last-writer-wins for the whole notebook. Do not edit the same note on two devices at once; export a ZIP first if you will switch devices mid-edit. Signing out returns the app to local mode without deleting anything locally.
+
+### Schema design
+
+`content_nodes` is one recursive table keyed `(user_id, id)` with `parent_id` self-reference, a constrained `type`, and `sort_order`. Note bodies live in `documents`, binaries in the `note-assets` bucket with metadata in `assets`, and imports are logged in `import_history`. This supports arbitrary depth without hard-coding semester → subject → module.
+
+RLS is `auth.uid() = user_id` on every table, and storage policies require the first path segment to equal the user id.
+
+## JSON format
+
+Full documentation: [`docs/JSON_SCHEMA.md`](docs/JSON_SCHEMA.md). A ready template is downloadable from **Import & export → JSON format** and at [`public/example-import.json`](public/example-import.json).
+
+```json
+{
+  "format": "ktu-notes",
+  "version": 1,
+  "nodes": [
+    {
+      "type": "subject",
+      "title": "Computer Networks",
+      "code": "PCCST501",
+      "children": [
+        { "type": "module", "title": "Module 1", "children": [
+          { "type": "topic", "title": "Protocol layering", "children": [
+            { "type": "note", "title": "OSI model", "body": "<h2>OSI model</h2><p>…</p>" }
+          ] }
+        ] }
+      ]
+    }
+  ]
+}
+```
+
+The app validates before writing, shows the hierarchy, reports errors and warnings, detects duplicate IDs and collisions, and previews exactly what will be added. Merge mode gives every imported node a fresh id and never overwrites. Replace-by-ID asks first.
+
+Images in note HTML are `asset:<id>` references. Plain JSON keeps the references; ZIP backups also contain `assets/` so the importer can re-link them. **Always use ZIP for a backup that must restore images.**
+
+## Backups
+
+- Per note / folder / subject / whole notebook: **Export** in the header, a node menu, or a folder header.
+- ZIP includes `data.json`, `assets/`, and a README.
+- `npm run backup` writes `ktu-notes-backup.zip` to the project root (excludes `node_modules`, `.next`, `.screens`, env files).
+- restores: **Import** accepts the ZIP, re-links images and imports into the chosen folder.
+
+## Syllabus sources
+
+Module numbering and topic wording follow the published KTU 2024 Scheme curriculum:
+
+- B.Tech Curriculum 2024, Computer Science and Engineering (Group A), Semester 5 — PCCST501, PCCST502.
+- B.Tech Curriculum 2024, Computer Science and Engineering (Data Science), Semester 5 — PCCDT503, and Big Data Processing (printed as **PBCDT504**; the requested code **PCCDT504** is used in the app and noted on its syllabus).
+- KTU S5 syllabus compilation (mgmits.ac.in) — PECST525 Data Mining.
+
+Official content is tagged `official`, import content `imported`, your own work `personal`. Syllabus entries can be edited or deleted; `Syllabus` notes carry a source/verification section. If a university revision changes a module, edit the entry — nothing is locked.
+
+## Project layout
+
+```
+app/                 page shell, layout, global scrapbook design system
+components/          tree, editor, folder view, dialogs, import/export, account
+lib/                 store, indexdb, cloud, tree helpers, seeded syllabus, io
+docs/                JSON schema and Supabase setup
+public/              example import template + icon
+supabase/schema.sql  tables, RLS, storage policies
+scripts/backup.sh    source-only ZIP backup
+```
+
+## Known limitations
+
+- Local-only mode is per browser/profile; it is not shared between devices.
+- Search is client-side and scans the data already in the notebook.
+- Cloud sync is whole-notebook last-writer-wins rather than per-field merge.
+- PDF export is not implemented; printing the note page uses the print stylesheet.
+- The Supabase project given for development may still need `supabase/schema.sql` run before cloud mode works; the header shows “Cloud not ready” and the reason until then.
+
+## Checks
+
+`npm run build` must pass. The app was exercised in Chromium at desktop and 390×844 mobile widths: subject CRUD, five levels of nesting, note editing, image upload/paste persistence, drag reorder/move, refresh persistence, valid/invalid JSON import, ZIP export/import with images, and scoped JSON export.

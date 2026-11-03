@@ -1,0 +1,21 @@
+node_modules/
+.next/
+out/
+
+# env / secrets — never commit real keys
+.env
+.env.local
+.env.production
+
+# backups & local artifacts
+*.zip
+.screens/
+*.log
+
+# editor
+.vscode/
+.idea/
+.DS_Store
+
+# temp test helpers
+scripts/heal-test.js

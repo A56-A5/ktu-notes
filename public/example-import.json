@@ -1,0 +1,18 @@
+{
+ "format": "ktu-notes",
+ "version": 1,
+ "nodes": [
+  {
+   "type": "subject", "title": "Example Subject (sample only)", "code": "EXAMPLE101",
+   "children": [
+    {"type": "folder", "title": "Module 1", "children": [
+      {"type": "topic", "title": "Sample topic", "children": [
+        {"type": "subtopic", "title": "Sample subtopic"},
+        {"type": "note", "title": "Sample note", "body": "<h2>Hello</h2><p>HTML body, as produced by the editor.</p>"}
+      ]}
+    ]},
+    {"type": "resource", "title": "Useful links"}
+   ]
+  }
+ ]
+}
