@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">MapReduce Execution Pipeline</text>
+
+  <!-- input splits -->
+  <rect x="30" y="60" width="90" height="55" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="75" y="83" font-size="12" text-anchor="middle" fill="#1e3a8a" font-weight="700">Input</text>
+  <text x="75" y="100" font-size="10.5" text-anchor="middle" fill="#1e3a8a">splits + records</text>
+
+  <!-- Map -->
+  <rect x="160" y="55" width="110" height="65" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="215" y="78" font-size="12" text-anchor="middle" fill="#14532d" font-weight="700">Map tasks</text>
+  <text x="215" y="95" font-size="10.5" text-anchor="middle" fill="#14532d">emit (k, v) pairs</text>
+  <text x="215" y="110" font-size="10.5" text-anchor="middle" fill="#14532d">parallel on nodes</text>
+
+  <!-- Shuffle & sort -->
+  <rect x="310" y="55" width="130" height="65" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <text x="375" y="78" font-size="12" text-anchor="middle" fill="#78350f" font-weight="700">Shuffle &amp; Sort</text>
+  <text x="375" y="95" font-size="10.5" text-anchor="middle" fill="#78350f">partition by key</text>
+  <text x="375" y="110" font-size="10.5" text-anchor="middle" fill="#78350f">group equal keys</text>
+
+  <!-- Reduce -->
+  <rect x="480" y="55" width="110" height="65" rx="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="535" y="78" font-size="12" text-anchor="middle" fill="#5b21b6" font-weight="700">Reduce tasks</text>
+  <text x="535" y="95" font-size="10.5" text-anchor="middle" fill="#5b21b6">aggregate per key</text>
+  <text x="535" y="110" font-size="10.5" text-anchor="middle" fill="#5b21b6">emit final (k,v)</text>
+
+  <!-- output -->
+  <rect x="620" y="60" width="60" height="55" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="650" y="88" font-size="11" text-anchor="middle" fill="#7f1d1d" font-weight="700">Output</text>
+
+  <!-- arrows -->
+  <path d="M 122 85 L 158 85" stroke="#3a3126" stroke-width="2" marker-end="url(#ma)"/>
+  <path d="M 272 85 L 308 85" stroke="#3a3126" stroke-width="2" marker-end="url(#ma)"/>
+  <path d="M 442 85 L 478 85" stroke="#3a3126" stroke-width="2" marker-end="url(#ma)"/>
+  <path d="M 592 85 L 618 85" stroke="#3a3126" stroke-width="2" marker-end="url(#ma)"/>
+
+  <!-- coordinator layer -->
+  <rect x="160" y="170" width="430" height="70" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="375" y="194" font-size="13" text-anchor="middle" fill="#3a3126" font-weight="700">JobTracker / ResourceManager + TaskTrackers</text>
+  <text x="375" y="216" font-size="11.5" text-anchor="middle" fill="#3a3126">schedules tasks on nodes, retries failures, tracks progress, keeps data locality</text>
+  <text x="375" y="232" font-size="11" text-anchor="middle" fill="#b45309">data locality: run Map where the block already lives</text>
+
+  <!-- key property -->
+  <text x="30" y="290" font-size="13.5" fill="#3a3126" font-weight="700">MapReduce is fault tolerant:</text>
+  <text x="30" y="312" font-size="12.5" fill="#3a3126">a failed task is simply re-executed elsewhere, and re-execution cannot corrupt the result because Map and Reduce are pure functions.</text>
+  <text x="30" y="336" font-size="12.5" fill="#b45309">The framework sorts and groups keys in the shuffle so the reducer always sees all values for one key together.</text>
+  <text x="30" y="360" font-size="12.5" fill="#b45309">Word-count example: Map emits (word, 1); Reduce sums the 1s per word.</text>
+  <defs><marker id="ma" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3a3126"/></marker></defs>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Stream Data Model — source, stream processor, sink</text>
+
+  <!-- source -->
+  <rect x="30" y="70" width="140" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="100" y="92" font-size="12.5" text-anchor="middle" fill="#1e3a8a" font-weight="700">Stream sources</text>
+  <text x="100" y="110" font-size="10.5" text-anchor="middle" fill="#1e3a8a">sensors · logs · clicks</text>
+  <text x="100" y="124" font-size="10.5" text-anchor="middle" fill="#1e3a8a">continuous events</text>
+
+  <!-- stream processor -->
+  <rect x="250" y="60" width="200" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="350" y="84" font-size="12.5" text-anchor="middle" fill="#14532d" font-weight="700">Stream processor</text>
+  <text x="350" y="104" font-size="10.5" text-anchor="middle" fill="#14532d">one pass or bounded memory</text>
+  <text x="350" y="120" font-size="10.5" text-anchor="middle" fill="#14532d">sampling · filtering · counters</text>
+  <text x="350" y="134" font-size="10.5" text-anchor="middle" fill="#14532d">sketches (CM, Flajolet-Martin)</text>
+
+  <path d="M 172 100 L 248 100" stroke="#3a3126" stroke-width="2" marker-end="url(#sta)"/>
+  <text x="210" y="92" font-size="10.5" text-anchor="middle" fill="#3a3126">events</text>
+
+  <!-- memory limit -->
+  <rect x="500" y="60" width="170" height="80" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <text x="585" y="84" font-size="12" text-anchor="middle" fill="#78350f" font-weight="700">Bounded memory</text>
+  <text x="585" y="104" font-size="10.5" text-anchor="middle" fill="#78350f">can't store the whole stream</text>
+  <text x="585" y="120" font-size="10.5" text-anchor="middle" fill="#78350f">approximate answers are fine</text>
+  <text x="585" y="134" font-size="10.5" text-anchor="middle" fill="#78350f">one pass</text>
+
+  <path d="M 452 100 L 498 100" stroke="#3a3126" stroke-width="2" marker-end="url(#sta)"/>
+
+  <!-- techniques -->
+  <rect x="30" y="180" width="640" height="80" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="50" y="204" font-size="13" fill="#3a3126" font-weight="700">Techniques for streams</text>
+  <text x="50" y="226" font-size="12" fill="#3a3126">Reservoir sampling: keep a uniform random sample of s items without knowing the stream length.</text>
+  <text x="50" y="246" font-size="12" fill="#3a3126">Bloom filter: test set membership in O(1) space (with false positives, never false negatives).</text>
+
+  <!-- counting -->
+  <rect x="30" y="280" width="300" height="70" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="50" y="304" font-size="12.5" fill="#7f1d1d" font-weight="700">Distinct elements</text>
+  <text x="50" y="324" font-size="11.5" fill="#7f1d1d">Flajolet-Martin sketch: count distinct</text>
+  <text x="50" y="341" font-size="11.5" fill="#7f1d1d">items with O(log n) memory</text>
+
+  <rect x="360" y="280" width="310" height="70" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="380" y="304" font-size="12.5" fill="#5b21b6" font-weight="700">Heavy hitters</text>
+  <text x="380" y="324" font-size="11.5" fill="#5b21b6">Count-Min sketch: approximate counts</text>
+  <text x="380" y="341" font-size="11.5" fill="#5b21b6">over a small array of counters</text>
+  <defs><marker id="sta" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3a3126"/></marker></defs>
+</svg>

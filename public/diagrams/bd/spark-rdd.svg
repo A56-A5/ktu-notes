@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Spark Execution Model — RDD lineage and stages</text>
+
+  <!-- input -->
+  <rect x="30" y="70" width="110" height="50" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="85" y="92" font-size="12" text-anchor="middle" fill="#1e3a8a" font-weight="700">HDFS / S3</text>
+  <text x="85" y="109" font-size="10.5" text-anchor="middle" fill="#1e3a8a">partitions</text>
+
+  <!-- RDD lineage -->
+  <rect x="180" y="70" width="110" height="50" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="235" y="92" font-size="12" text-anchor="middle" fill="#14532d" font-weight="700">RDD r1</text>
+  <text x="235" y="109" font-size="10.5" text-anchor="middle" fill="#14532d">map(f)</text>
+
+  <rect x="330" y="70" width="110" height="50" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="385" y="92" font-size="12" text-anchor="middle" fill="#14532d" font-weight="700">RDD r2</text>
+  <text x="385" y="109" font-size="10.5" text-anchor="middle" fill="#14532d">filter(g)</text>
+
+  <!-- shuffle boundary -->
+  <rect x="480" y="60" width="120" height="70" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <text x="540" y="82" font-size="12" text-anchor="middle" fill="#78350f" font-weight="700">shuffle</text>
+  <text x="540" y="99" font-size="10.5" text-anchor="middle" fill="#78350f">reduceByKey</text>
+  <text x="540" y="115" font-size="10.5" text-anchor="middle" fill="#78350f">moves data across nodes</text>
+
+  <rect x="640" y="70" width="50" height="50" rx="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="665" y="99" font-size="11" text-anchor="middle" fill="#5b21b6" font-weight="700">out</text>
+
+  <path d="M 142 95 L 178 95" stroke="#3a3126" stroke-width="2" marker-end="url(#sa)"/>
+  <path d="M 292 95 L 328 95" stroke="#3a3126" stroke-width="2" marker-end="url(#sa)"/>
+  <path d="M 442 95 L 478 95" stroke="#3a3126" stroke-width="2" marker-end="url(#sa)"/>
+  <path d="M 602 95 L 638 95" stroke="#3a3126" stroke-width="2" marker-end="url(#sa)"/>
+
+  <!-- stage brackets -->
+  <text x="235" y="155" font-size="11" fill="#16a34a">— narrow transformations, no data movement —</text>
+  <text x="540" y="155" font-size="11" fill="#b45309">— wide transformation = stage boundary —</text>
+
+  <!-- DAG / lineage -->
+  <rect x="30" y="185" width="640" height="90" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="50" y="210" font-size="13" fill="#3a3126" font-weight="700">Key points</text>
+  <text x="50" y="232" font-size="12" fill="#3a3126">RDDs are immutable and lazily evaluated: transformations build a lineage DAG; nothing runs until an action (count, collect).</text>
+  <text x="50" y="252" font-size="12" fill="#3a3126">The lineage lets Spark recompute lost partitions after a node failure instead of replicating data.</text>
+  <text x="50" y="272" font-size="12" fill="#b45309">Shuffles are expensive; they split the job into stages (one per shuffle) and write intermediate files.</text>
+
+  <text x="30" y="310" font-size="12.5" fill="#3a3126">Spark keeps intermediate results in memory across operations, making iterative ML far faster than MapReduce.</text>
+  <text x="30" y="334" font-size="12.5" fill="#3a3126">Transformations: map, filter, flatMap, union (narrow); reduceByKey, groupByKey, join (wide).</text>
+  <text x="30" y="358" font-size="12.5" fill="#16a34a">Actions: collect, count, reduce, take, saveAsTextFile (trigger execution).</text>
+  <defs><marker id="sa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3a3126"/></marker></defs>
+</svg>

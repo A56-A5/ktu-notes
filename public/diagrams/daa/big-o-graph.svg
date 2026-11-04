@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" font-family="'Segoe UI', system-ui, sans-serif">
+  <!-- Axes -->
+  <line x1="60" y1="360" x2="600" y2="360" stroke="#3a3126" stroke-width="2"/>
+  <line x1="60" y1="360" x2="60" y2="30" stroke="#3a3126" stroke-width="2"/>
+  <text x="600" y="382" font-size="15" fill="#3a3126" text-anchor="end">n (input size)</text>
+  <text x="52" y="24" font-size="15" fill="#3a3126" text-anchor="end">f(n)</text>
+
+  <!-- Curves: x in 1..10 -> px 60..600 (scale 60 px per unit? use 54px) -->
+  <!-- log n: points at x=1..10, y=f -->
+  <!-- helper computed manually below -->
+
+  <!-- c*n^2 (upper bound band) -->
+  <polygon points="60,340 60,352 600,352 600,40" fill="#f59e0b" opacity="0.10"/>
+  <path d="M60 340 L60 352 L600 352 L600 40" fill="none" stroke="#b45309" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+
+  <!-- n log2 n : y = x*log2(x), scaled: px_y = 360 - f * 34 -->
+  <!-- x=1:0,2:2,3:4.75,4:8,5:11.6,6:15.5,7:19.7,8:24,9:28.5,10:33.2 -->
+  <path d="M60 360 L168 292 L276 198 L384 88 L438 40" fill="none" stroke="#7c3aed" stroke-width="3"/>
+  <text x="414" y="56" font-size="15" fill="#7c3aed" font-weight="600">n log n</text>
+
+  <!-- n : y = n -> px: x*54+6, y=360 - n*30 -->
+  <!-- x=1:(60,330),2:(114,300),3:(168,270),4:(222,240),5:(276,210),6:(330,180),7:(384,150),8:(438,120),9:(492,90),10:(546,60) -->
+  <line x1="60" y1="330" x2="546" y2="60" stroke="#2563eb" stroke-width="3"/>
+  <text x="520" y="52" font-size="15" fill="#2563eb" font-weight="600">n</text>
+
+  <!-- n^2 : y=n^2 scaled -> px_y = 360 - n*n*3.1 ; n=10 -> 50 -->
+  <!-- x=1:(60,357),2:(114,348),3:(168,332),4:(222,310),5:(276,282),6:(330,248),7:(384,208),8:(438,162),9:(492,110),10:(546,52) -->
+  <path d="M60 357 L114 348 L168 332 L222 310 L276 282 L330 248 L384 208 L438 162 L492 110 L546 52" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <text x="548" y="40" font-size="15" fill="#dc2626" font-weight="600">n²</text>
+
+  <!-- 2^n: scaled to fit -> y = 2^(n) mapped: n=1->2px,2->6,3->16,4->44 -->
+  <path d="M60 357 L114 353 L168 343 L222 316 L276 290 L330 220 L384 120" fill="none" stroke="#16a34a" stroke-width="3"/>
+  <text x="386" y="108" font-size="15" fill="#16a34a" font-weight="600">2ⁿ</text>
+
+  <!-- constant c -->
+  <line x1="60" y1="358" x2="300" y2="358" stroke="#64748b" stroke-width="3"/>
+  <text x="306" y="362" font-size="14" fill="#64748b" font-weight="600">c (constant)</text>
+
+  <!-- Callout: growth order -->
+  <text x="70" y="30" font-size="16" fill="#3a3126" font-weight="700">Growth order: 1 &lt; log n &lt; n &lt; n log n &lt; n² &lt; 2ⁿ</text>
+  <text x="70" y="410" font-size="13" fill="#b45309">Shaded region = c·n² upper bound ⇒ n² ∈ O(n²) for any c ≥ 1</text>
+</svg>

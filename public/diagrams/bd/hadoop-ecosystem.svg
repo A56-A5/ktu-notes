@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">The Hadoop Ecosystem — components and roles</text>
+
+  <!-- layer boxes -->
+  <!-- ingestion -->
+  <rect x="30" y="60" width="640" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="44" y="82" font-size="12.5" fill="#1e3a8a" font-weight="700">Data ingestion</text>
+  <text x="44" y="104" font-size="11.5" fill="#1e3a8a">Flume · Sqoop · Kafka (streams) · NiFi</text>
+
+  <!-- storage -->
+  <rect x="30" y="130" width="640" height="70" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="44" y="152" font-size="12.5" fill="#14532d" font-weight="700">Storage</text>
+  <text x="44" y="174" font-size="11.5" fill="#14532d">HDFS (replicated blocks) · HBase (column store)</text>
+  <text x="44" y="192" font-size="11.5" fill="#14532d">S3 / local FS in newer stacks</text>
+
+  <!-- processing -->
+  <rect x="30" y="210" width="640" height="70" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="44" y="232" font-size="12.5" fill="#78350f" font-weight="700">Processing &amp; query</text>
+  <text x="44" y="254" font-size="11.5" fill="#78350f">MapReduce · Spark (in-memory, RDD/DAG) · Tez</text>
+  <text x="44" y="272" font-size="11.5" fill="#78350f">Hive (SQL-over-HDFS) · Pig (dataflow scripting)</text>
+
+  <!-- management -->
+  <rect x="30" y="290" width="640" height="55" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="44" y="312" font-size="12.5" fill="#5b21b6" font-weight="700">Coordination &amp; management</text>
+  <text x="44" y="332" font-size="11.5" fill="#5b21b6">YARN (resource mgmt) · ZooKeeper (coordination) · Ambari/Cloudera Manager (admin)</text>
+
+  <!-- note -->
+  <text x="30" y="382" font-size="13" fill="#3a3126">The stack is layered: ingestion feeds storage, processing reads storage, YARN schedules the work.</text>
+  <text x="30" y="404" font-size="12.5" fill="#b45309">Hadoop 2+ separates scheduling (YARN) from computing, so Spark can run beside MapReduce.</text>
+</svg>

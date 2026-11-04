@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 330" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Greedy vs Dynamic Programming vs Backtracking</text>
+
+  <!-- Greedy -->
+  <rect x="30" y="55" width="200" height="120" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="130" y="80" font-size="14" text-anchor="middle" fill="#1e3a8a" font-weight="700">Greedy</text>
+  <text x="130" y="104" font-size="12" text-anchor="middle" fill="#1e3a8a">choose best local option</text>
+  <text x="130" y="122" font-size="12" text-anchor="middle" fill="#1e3a8a">one shot, no backtracking</text>
+  <text x="130" y="140" font-size="12" text-anchor="middle" fill="#1e3a8a">fast but needs proof of</text>
+  <text x="130" y="158" font-size="12" text-anchor="middle" fill="#1e3a8a">optimal substructure</text>
+
+  <!-- DP -->
+  <rect x="250" y="55" width="200" height="120" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="350" y="80" font-size="14" text-anchor="middle" fill="#14532d" font-weight="700">Dynamic Programming</text>
+  <text x="350" y="104" font-size="12" text-anchor="middle" fill="#14532d">solve overlapping subproblems</text>
+  <text x="350" y="122" font-size="12" text-anchor="middle" fill="#14532d">store answers in a table</text>
+  <text x="350" y="140" font-size="12" text-anchor="middle" fill="#14532d">bottom-up or memoised</text>
+  <text x="350" y="158" font-size="12" text-anchor="middle" fill="#14532d">exact, explores all</text>
+
+  <!-- Backtracking -->
+  <rect x="470" y="55" width="200" height="120" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="570" y="80" font-size="14" text-anchor="middle" fill="#7f1d1d" font-weight="700">Backtracking</text>
+  <text x="570" y="104" font-size="12" text-anchor="middle" fill="#7f1d1d">depth-first search over a</text>
+  <text x="570" y="122" font-size="12" text-anchor="middle" fill="#7f1d1d">state-space tree</text>
+  <text x="570" y="140" font-size="12" text-anchor="middle" fill="#7f1d1d">prune infeasible branches</text>
+  <text x="570" y="158" font-size="12" text-anchor="middle" fill="#7f1d1d">for constraint problems</text>
+
+  <!-- When to use -->
+  <rect x="30" y="195" width="640" height="115" rx="8" fill="#fef9c3" stroke="#b45309" stroke-width="2"/>
+  <text x="50" y="220" font-size="13.5" fill="#78350f" font-weight="700">When to use each</text>
+  <text x="50" y="244" font-size="12.5" fill="#78350f">Greedy: optimal substructure + greedy choice holds (activity selection, Dijkstra, Prim, Kruskal, fractional knapsack).</text>
+  <text x="50" y="266" font-size="12.5" fill="#78350f">DP: overlapping subproblems + optimal substructure, need exact optimum (0/1 knapsack, matrix chain, Floyd-Warshall, LCS).</text>
+  <text x="50" y="288" font-size="12.5" fill="#78350f">Backtracking: search/constraint problems where you enumerate candidates and prune (N-Queens, graph colouring, subset sum).</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 360" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">k-Means Clustering — assignment &amp; centroid update</text>
+  <text x="20" y="52" font-size="13.5" fill="#3a3126">Iterate: (1) assign each point to the nearest centroid, (2) move each centroid to the mean of its points. Repeat until stable.</text>
+
+  <!-- panel 1: before -->
+  <rect x="30" y="70" width="300" height="250" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="180" y="92" font-size="13" text-anchor="middle" fill="#3a3126" font-weight="700">Step 1 — assignment</text>
+
+  <circle cx="90" cy="150" r="7" fill="#dc2626"/><circle cx="150" cy="130" r="7" fill="#dc2626"/><circle cx="120" cy="190" r="7" fill="#dc2626"/>
+  <circle cx="240" cy="120" r="7" fill="#2563eb"/><circle cx="290" cy="170" r="7" fill="#2563eb"/><circle cx="260" cy="210" r="7" fill="#2563eb"/>
+  <circle cx="140" cy="250" r="7" fill="#dc2626"/><circle cx="240" cy="260" r="7" fill="#2563eb"/>
+
+  <!-- centroids -->
+  <circle cx="130" cy="180" r="13" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <text x="130" y="184" font-size="12" text-anchor="middle" fill="#dc2626" font-weight="700">C1</text>
+  <circle cx="260" cy="180" r="13" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <text x="260" y="184" font-size="12" text-anchor="middle" fill="#2563eb" font-weight="700">C2</text>
+
+  <!-- panel 2: after -->
+  <rect x="360" y="70" width="300" height="250" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="510" y="92" font-size="13" text-anchor="middle" fill="#3a3126" font-weight="700">Step 2 — centroid update</text>
+  <circle cx="90" cy="160" r="7" fill="#dc2626"/><circle cx="150" cy="120" r="7" fill="#dc2626"/><circle cx="120" cy="200" r="7" fill="#dc2626"/><circle cx="140" cy="250" r="7" fill="#dc2626"/>
+  <circle cx="240" cy="110" r="7" fill="#2563eb"/><circle cx="300" cy="160" r="7" fill="#2563eb"/><circle cx="260" cy="210" r="7" fill="#2563eb"/><circle cx="250" cy="260" r="7" fill="#2563eb"/>
+  <circle cx="125" cy="182" r="14" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <text x="125" y="186" font-size="12" text-anchor="middle" fill="#dc2626" font-weight="700">C1</text>
+  <circle cx="262" cy="185" r="14" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <text x="262" y="189" font-size="12" text-anchor="middle" fill="#2563eb" font-weight="700">C2</text>
+
+  <!-- arrow -->
+  <path d="M 336 195 L 352 195" stroke="#3a3126" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- bottom notes -->
+  <text x="30" y="342" font-size="13" fill="#b45309">Initialisation matters: poor k or bad seeds change the final clusters. K-means minimises the within-cluster sum of squares (WCSS).</text>
+  <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3a3126"/></marker></defs>
+</svg>

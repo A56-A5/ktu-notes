@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Dijkstra's Shortest Path — example graph</text>
+  <text x="20" y="52" font-size="13" fill="#3a3126">Find shortest distances from source A to every other vertex.</text>
+
+  <!-- nodes -->
+  <circle cx="120" cy="100" r="24" fill="#fef3c7" stroke="#3a3126" stroke-width="2"/>
+  <text x="120" y="106" font-size="15" text-anchor="middle">A</text>
+  <text x="120" y="70" font-size="12" text-anchor="middle" fill="#b45309">0</text>
+
+  <circle cx="300" cy="60" r="24" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="300" y="66" font-size="15" text-anchor="middle" fill="#1e3a8a">B</text>
+  <text x="300" y="34" font-size="12" text-anchor="middle" fill="#1e3a8a">4</text>
+
+  <circle cx="520" cy="100" r="24" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="520" y="106" font-size="15" text-anchor="middle" fill="#14532d">C</text>
+  <text x="520" y="72" font-size="12" text-anchor="middle" fill="#14532d">6</text>
+
+  <circle cx="200" cy="260" r="24" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="200" y="266" font-size="15" text-anchor="middle" fill="#7f1d1d">D</text>
+  <text x="200" y="234" font-size="12" text-anchor="middle" fill="#7f1d1d">7</text>
+
+  <circle cx="420" cy="280" r="24" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="420" y="286" font-size="15" text-anchor="middle" fill="#5b21b6">E</text>
+  <text x="420" y="254" font-size="12" text-anchor="middle" fill="#5b21b6">5</text>
+
+  <!-- edges with weights -->
+  <line x1="142" y1="112" x2="278" y2="72" stroke="#3a3126" stroke-width="2"/><text x="215" y="84" font-size="12" fill="#3a3126" text-anchor="middle">4</text>
+  <line x1="322" y1="72" x2="498" y2="90" stroke="#3a3126" stroke-width="2"/><text x="410" y="74" font-size="12" fill="#3a3126" text-anchor="middle">2</text>
+  <line x1="128" y1="120" x2="192" y2="238" stroke="#3a3126" stroke-width="2"/><text x="140" y="185" font-size="12" fill="#3a3126" text-anchor="middle">7</text>
+  <line x1="510" y1="120" x2="430" y2="258" stroke="#3a3126" stroke-width="2"/><text x="482" y="195" font-size="12" fill="#3a3126" text-anchor="middle">4</text>
+  <line x1="222" y1="248" x2="398" y2="268" stroke="#3a3126" stroke-width="2"/><text x="305" y="272" font-size="12" fill="#3a3126" text-anchor="middle">1</text>
+  <line x1="315" y1="75" x2="215" y2="244" stroke="#3a3126" stroke-width="2" stroke-dasharray="5 4"/><text x="250" y="165" font-size="11" fill="#94a3b8" text-anchor="middle">3 (alt path)</text>
+
+  <!-- algorithm summary -->
+  <rect x="60" y="315" width="580" height="55" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="80" y="338" font-size="12.5" fill="#3a3126"><tspan font-weight="700">Steps:</tspan> pick the unvisited vertex with smallest tentative distance; relax all its edges (dist[v] = min(dist[v], dist[u] + w(u,v))); repeat until all visited.</text>
+  <text x="80" y="360" font-size="12.5" fill="#3a3126"><tspan font-weight="700">Complexity:</tspan> O(V²) with array, O((V+E) log V) with a binary heap. Works only for non-negative weights.</text>
+</svg>

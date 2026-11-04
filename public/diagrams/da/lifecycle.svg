@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 360" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Data Analytics Life Cycle</text>
+
+  <!-- phases around a cycle -->
+  <circle cx="350" cy="195" r="120" fill="none" stroke="#d8c9a8" stroke-width="2" stroke-dasharray="6 5"/>
+
+  <circle cx="350" cy="75" r="42" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="350" y="72" font-size="11" text-anchor="middle" fill="#1e3a8a" font-weight="700">1. Discovery</text>
+  <text x="350" y="88" font-size="9.5" text-anchor="middle" fill="#1e3a8a">frame problem</text>
+
+  <circle cx="465" cy="130" r="42" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="465" y="127" font-size="11" text-anchor="middle" fill="#14532d" font-weight="700">2. Data prep</text>
+  <text x="465" y="143" font-size="9.5" text-anchor="middle" fill="#14532d">clean, integrate</text>
+
+  <circle cx="465" cy="260" r="42" fill="#fef9c3" stroke="#b45309" stroke-width="2"/>
+  <text x="465" y="257" font-size="11" text-anchor="middle" fill="#78350f" font-weight="700">3. Model plan</text>
+  <text x="465" y="273" font-size="9.5" text-anchor="middle" fill="#78350f">choose technique</text>
+
+  <circle cx="350" cy="315" r="42" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="350" y="312" font-size="11" text-anchor="middle" fill="#5b21b6" font-weight="700">4. Model</text>
+  <text x="350" y="328" font-size="9.5" text-anchor="middle" fill="#5b21b6">build &amp; test</text>
+
+  <circle cx="235" cy="260" r="42" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="235" y="257" font-size="11" text-anchor="middle" fill="#7f1d1d" font-weight="700">5. Communicate</text>
+  <text x="235" y="273" font-size="9.5" text-anchor="middle" fill="#7f1d1d">results</text>
+
+  <circle cx="235" cy="130" r="42" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+  <text x="235" y="127" font-size="11" text-anchor="middle" fill="#831843" font-weight="700">6. Operationalise</text>
+  <text x="235" y="143" font-size="9.5" text-anchor="middle" fill="#831843">deploy, monitor</text>
+
+  <!-- centre -->
+  <text x="350" y="190" font-size="13" text-anchor="middle" fill="#3a3126" font-weight="700">iterative cycle</text>
+  <text x="350" y="208" font-size="11" text-anchor="middle" fill="#b45309">(EMC data analytics life cycle)</text>
+
+  <text x="20" y="352" font-size="12.5" fill="#3a3126">The cycle is iterative: evaluation and monitoring feed back into discovery and preparation.</text>
+</svg>

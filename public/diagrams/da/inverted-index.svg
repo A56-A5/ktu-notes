@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" font-family="'Segoe UI', system-ui, sans-serif">
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Inverted Index — building and querying</text>
+
+  <!-- documents -->
+  <text x="30" y="65" font-size="13" fill="#3a3126" font-weight="700">Documents</text>
+  <text x="30" y="90" font-size="12.5">D1: "the cat sat on the mat"</text>
+  <text x="30" y="112" font-size="12.5">D2: "the dog sat on the log"</text>
+  <text x="30" y="134" font-size="12.5">D3: "the cat chased the dog"</text>
+
+  <!-- arrow -->
+  <path d="M 250 140 L 300 140" stroke="#3a3126" stroke-width="2" marker-end="url(#iar)"/>
+  <text x="275" y="130" font-size="11" text-anchor="middle" fill="#b45309">index</text>
+
+  <!-- inverted index table -->
+  <rect x="320" y="60" width="350" height="190" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
+  <text x="340" y="84" font-size="13" fill="#3a3126" font-weight="700">Term → posting list (doc ids)</text>
+  <line x1="320" y1="94" x2="670" y2="94" stroke="#d8c9a8" stroke-width="1"/>
+
+  <text x="340" y="118" font-size="12.5" fill="#2563eb" font-weight="700">cat</text><text x="420" y="118" font-size="12.5">→ [D1, D3]</text>
+  <text x="340" y="140" font-size="12.5" fill="#2563eb" font-weight="700">chased</text><text x="420" y="140" font-size="12.5">→ [D3]</text>
+  <text x="340" y="162" font-size="12.5" fill="#2563eb" font-weight="700">dog</text><text x="420" y="162" font-size="12.5">→ [D2, D3]</text>
+  <text x="340" y="184" font-size="12.5" fill="#2563eb" font-weight="700">log</text><text x="420" y="184" font-size="12.5">→ [D2]</text>
+  <text x="340" y="206" font-size="12.5" fill="#2563eb" font-weight="700">mat</text><text x="420" y="206" font-size="12.5">→ [D1]</text>
+  <text x="340" y="228" font-size="12.5" fill="#2563eb" font-weight="700">sat</text><text x="420" y="228" font-size="12.5">→ [D1, D2]</text>
+
+  <!-- query -->
+  <rect x="30" y="160" width="250" height="95" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="46" y="184" font-size="12.5" fill="#1e3a8a" font-weight="700">Query: cat AND dog</text>
+  <text x="46" y="206" font-size="12" fill="#1e3a8a">intersect [D1,D3] ∩ [D2,D3]</text>
+  <text x="46" y="228" font-size="12" fill="#1e3a8a">→ result {D3}</text>
+  <text x="46" y="248" font-size="11" fill="#1e3a8a">seen by the "sat" topic</text>
+
+  <text x="30" y="290" font-size="13" fill="#b45309">Stop words (the, on) are usually dropped. Skip pointers shorten long posting lists; Boolean AND intersects sorted lists.</text>
+  <defs><marker id="iar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3a3126"/></marker></defs>
+</svg>
