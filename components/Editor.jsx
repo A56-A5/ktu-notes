@@ -110,6 +110,13 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
   const editorRef = useRef(null);
   const latest = useRef({ body: node.body || '', title: node.title });
 
+  // A sync from another editor can change this note while it is open; adopt the
+  // new title unless the field is focused (so typing is never interrupted).
+  const titleRef = useRef(null);
+  useEffect(() => {
+    if (document.activeElement !== titleRef.current) setTitle(node.title);
+  }, [node.title]);
+
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -293,6 +300,7 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
             {node.progress === 'done' && <span className="badge done">studied</span>}
           </div>
           <input
+            ref={titleRef}
             className="note-title"
             value={title}
             onChange={(e) => changeTitle(e.target.value)}

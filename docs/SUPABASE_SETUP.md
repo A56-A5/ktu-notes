@@ -1,36 +1,61 @@
-# Supabase setup
+# Supabase setup (shared, login-free notebook)
 
-1. Create a project at supabase.com and open it.
-2. **Authentication → Providers → Email**: enable Email. For a personal single-user notebook, turn off "Confirm email" so the first sign-in works immediately. Otherwise confirm the address before signing in.
-3. Open **SQL Editor → New query**. Paste the entire contents of `supabase/schema.sql`. Run it. This creates:
-   - `content_nodes` (recursive typed tree, primary key `(user_id, id)`)
+This app has **no login**. Everyone who opens the site edits the same shared
+notebook, so treat the deployment URL as a public link. Only the publishable /
+anon key is used in the browser, and it is safe to ship because the tables are
+world-writable by design.
+
+## New project
+
+1. Create a project at supabase.com. You do **not** need to configure
+   Authentication (Email/Google/etc.).
+2. Open **SQL Editor → New query**. Paste the entire contents of
+   `supabase/schema.sql`. Run it. It creates:
+   - `content_nodes` (recursive typed tree, primary key `(workspace_id, id)`)
    - `documents` (note HTML)
    - `assets` (image metadata)
    - `import_history`
-   - RLS policies `auth.uid() = user_id`
-   - private storage bucket `note-assets` and per-user storage policies
-4. **Project settings → API**: copy the Project URL and the publishable/anon key.
-5. Create `.env.local` in the project root:
+   - shared RLS policies allowing `anon` + `authenticated` full access
+   - public storage bucket `note-assets` with anonymous read/write policies
+3. **Project settings → API**: copy the Project URL and the publishable/anon key.
+4. Create `.env.local` in the project root:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://<ref>.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable-or-anon-key>
    ```
-6. Restart `npm run dev`.
-7. Click the storage pill in the header → create an account → choose which copy to keep.
+   Optional: `NEXT_PUBLIC_WORKSPACE=public` if you run several independent
+   notebooks on one project.
+5. Restart `npm run dev`. The header pill shows sync state — there is no sign-in.
+
+## Upgrading a project that used the old login schema
+
+`schema.sql` migrates in place, safely and idempotently:
+
+- drops the foreign keys to `auth.users`,
+- renames `user_id` → `workspace_id`,
+- converts it `uuid` → `text` and sets every row to the `'public'` workspace
+  (your notes are kept),
+- replaces the per-user RLS policies and storage policies with shared ones,
+  and makes the bucket public.
+
+Just run the file again. It aborts with a clear message if two old users owned
+the same node id (it would collide in the shared notebook) — delete those
+duplicates first, then re-run.
 
 ## Verifying
 
-- Header pill says **Synced** after the first push.
-- Supabase **Table editor → content_nodes** shows rows for your user.
-- **Storage → note-assets → &lt;user-id&gt;/** contains uploaded images.
-- RLS: with a second account, the first account's rows are invisible (queries return an empty array).
+- Header pill says **Shared · synced** after the first push.
+- Supabase **Table editor → content_nodes** shows the shared rows.
+- **Storage → note-assets → public/** contains uploaded images.
+- Open the site in a second browser (or private window): it pulls the same
+  notebook with no account.
 
 ## Common problems
 
 | Symptom | Cause / fix |
 |---|---|
 | “Cloud tables are missing” | `supabase/schema.sql` was not run, or was run in another project. Run it in this project's SQL editor. |
-| Sign-up succeeds but no session | Email confirmation is on. Confirm the email, then sign in (or disable confirmation for personal use). |
-| `new row violates row-level security policy` | The client is not signed in, or the policy was edited. Re-run the RLS section of the schema. |
-| Images upload but do not appear on another device | The bucket is private by design; the app downloads through an authenticated session. Check the storage policies use `(storage.foldername(name))[1] = auth.uid()::text`. |
-| Two devices overwrite each other | Whole-notebook last-writer-wins. Export a ZIP before switching devices and avoid simultaneous edits. |
+| “Row Level Security blocked the request” | The project still uses the old per-user policies. Re-run `supabase/schema.sql`. |
+| `new row violates row-level security policy` | The anon role has no grants/policies yet. Re-run the RLS/grants section of `supabase/schema.sql`. |
+| Two people edit the same note at once | Merge is per item (newest `modified` wins). Last writer wins on that note; export a ZIP before a big shared edit session. |
+| Someone deleted something | Anyone with the link can delete. There is no undo across devices; keep a ZIP backup. |

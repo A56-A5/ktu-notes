@@ -10,14 +10,26 @@ import Tree from '../components/Tree';
 import FolderView from '../components/FolderView';
 import NoteEditor from '../components/Editor';
 import ImportExport from '../components/ImportExport';
-import Account from '../components/Account';
+import CloudPanel from '../components/CloudPanel';
 import MoveDialog from '../components/MoveDialog';
 import AddEditDialog from '../components/AddEditDialog';
 import { Menu, useUI } from '../components/ui';
 import { useStore } from '../lib/store';
 import { ancestors, childrenOf, descendants, isFolder, isNote, searchNodes, subjectOf, uid, progressOf } from '../lib/tree';
 import { buildExport, downloadJSON, exportZip, safeName } from '../lib/io';
-import { configured, sb, pull, push, uploadAsset, downloadAsset, deleteAssets, cloudHealth } from '../lib/cloud';
+import { buildSeed } from '../lib/seed';
+import {
+  configured,
+  WORKSPACE,
+  pull,
+  push,
+  mergeNotebook,
+  sameNotebook,
+  uploadAsset,
+  downloadAsset,
+  deleteAssets,
+  cloudHealth,
+} from '../lib/cloud';
 import { hooks, listAssets } from '../lib/db';
 
 export default function Page() {
@@ -36,18 +48,33 @@ export default function Page() {
   const [io, setIo] = useState({ open: false, target: null });
   const [account, setAccount] = useState(false);
 
-  const [user, setUser] = useState(null);
-  const [cloudMode, setCloudMode] = useState(configured ? 'local' : 'unconfigured');
-  const [cloudLabel, setCloudLabel] = useState(configured ? 'Local only' : 'Local mode');
-  const [cloudError, setCloudError] = useState('');
-  const [cloudPrompt, setCloudPrompt] = useState(null);
+  const [sync, setSync] = useState({
+    state: configured ? 'connecting' : 'off',
+    label: configured ? 'Connecting…' : 'Local only',
+    error: '',
+    at: 0,
+    count: 0,
+    host: '',
+  });
+  const [autoSync, setAutoSync] = useState(true);
   const [busy, setBusy] = useState(false);
-  const decision = useRef(null);
   const pushTimer = useRef(null);
-  const skipPush = useRef(false);
-  const knownIds = useRef(null);
+  const skipPush = useRef(true);
+  const known = useRef(null);
+  const syncing = useRef(false);
+  const assetsUploaded = useRef(false);
   const nodesRef = useRef(nodes);
   nodesRef.current = nodes;
+  const storeRef = useRef(store);
+  storeRef.current = store;
+  const seedIdsRef = useRef(null);
+  const seedIds = () => {
+    if (!seedIdsRef.current) seedIdsRef.current = new Set(buildSeed().map((n) => n.id));
+    return seedIdsRef.current;
+  };
+
+  const syncState = sync.state;
+  const live = syncState === 'live';
 
   const semester = nodes.find((n) => n.id === semesterId) || nodes.find((n) => n.type === 'semester');
   const subject = subjectId ? nodes.find((n) => n.id === subjectId) : null;
@@ -59,202 +86,165 @@ export default function Page() {
     }
   }, [nodes, semester]);
 
-  // ------------------------------------------------------------- cloud auth
+  // ------------------------------------------------------- shared cloud sync
+  // No login: everyone shares one notebook. Each sync pulls the remote tree,
+  // merges it with what is in this browser (newest `modified` wins per node),
+  // then pushes the merged result back.
+  const runSync = useCallback(async () => {
+    if (!configured || syncing.current) return;
+    syncing.current = true;
+    try {
+      setSync((x) => ({ ...x, state: 'syncing', label: 'Syncing…', error: '' }));
+      const health = await cloudHealth();
+      if (!health.ok) {
+        setSync((x) => ({
+          ...x,
+          state: 'error',
+          label: 'Cloud not ready',
+          error:
+            health.reason === 'legacy-schema'
+              ? 'This Supabase project still uses the old login schema. Run supabase/schema.sql once to migrate it to the shared notebook. Everything stays editable locally until then.'
+              : health.reason === 'missing-tables'
+              ? 'Cloud tables are missing. Run supabase/schema.sql in the Supabase SQL editor.'
+              : health.reason === 'rls'
+              ? 'Row Level Security blocked the request. Re-run supabase/schema.sql to allow the shared notebook.'
+              : health.reason,
+          host: health.host || '',
+        }));
+        return;
+      }
+      const remote = await pull();
+      const local = nodesRef.current || [];
+      let next = local;
+      if (!remote.length) {
+        if (local.length) await push(local);
+      } else {
+        next = mergeNotebook(local, remote, known.current, known.current ? null : seedIds());
+        if (!sameNotebook(local, next)) {
+          skipPush.current = true;
+          storeRef.current.replaceAll(next);
+        }
+        await push(next, { knownIds: known.current });
+      }
+      known.current = new Map(next.map((n) => [n.id, n.modified || 0]));
+      setSync({
+        state: 'live',
+        label: 'Shared · synced',
+        error: '',
+        at: Date.now(),
+        count: next.length,
+        host: health.host || '',
+      });
+      if (!assetsUploaded.current) {
+        assetsUploaded.current = true;
+        try {
+          for (const a of await listAssets()) await uploadAsset(a.id, a.blob, a);
+        } catch (e) {
+          setSync((x) => ({ ...x, error: String(e.message || e) }));
+        }
+      }
+    } catch (e) {
+      setSync((x) => ({ ...x, state: 'error', label: 'Sync failed', error: String(e.message || e) }));
+    } finally {
+      syncing.current = false;
+    }
+  }, []);
+
+  // Images are mirrored through the same anonymous connection.
   useEffect(() => {
     if (!configured) return;
-    let alive = true;
-    sb.auth.getSession().then(({ data }) => {
-      if (alive) setUser(data.session?.user || null);
-    });
-    const { data: sub } = sb.auth.onAuthStateChange((_e, session) => {
-      if (alive) setUser(session?.user || null);
-    });
+    hooks.put = (id, blob, meta) => uploadAsset(id, blob, meta);
+    hooks.get = (id) => downloadAsset(id);
+    hooks.del = (ids) => deleteAssets(ids);
+    hooks.err = (e) => setSync((x) => ({ ...x, error: String(e.message || e) }));
     return () => {
-      alive = false;
-      sub.subscription.unsubscribe();
+      hooks.put = hooks.get = hooks.del = null;
     };
   }, []);
 
+  // First sync once the local notebook has loaded.
   useEffect(() => {
-    if (!user) {
-      decision.current = null;
-      setCloudMode(configured ? 'local' : 'unconfigured');
-      setCloudLabel(configured ? 'Local only' : 'Local mode');
-      setCloudPrompt(null);
-      hooks.put = hooks.get = hooks.del = null;
-      return;
-    }
+    if (!configured || !store.ready) return;
+    runSync();
+  }, [configured, store.ready, runSync]);
 
-    let alive = true;
-    (async () => {
-      setCloudError('');
-      setCloudLabel('Checking cloud…');
-      const health = await cloudHealth(user.id);
-      if (!alive) return;
-      if (!health.ok) {
-        setCloudLabel('Cloud not ready');
-        setCloudError(
-          health.reason === 'missing-tables'
-            ? 'Cloud tables are missing. Run supabase/schema.sql in the Supabase SQL editor.'
-            : health.reason === 'rls'
-            ? 'Row Level Security blocked the request. Check the policies in supabase/schema.sql.'
-            : health.reason
-        );
-        setCloudMode('error');
-        return;
-      }
-      hooks.put = (id, blob, meta) => uploadAsset(user.id, id, blob, meta);
-      hooks.get = (id) => downloadAsset(id);
-      hooks.del = (ids) => deleteAssets(ids);
-      hooks.err = (e) => setCloudError(String(e.message || e));
-
-      try {
-        const remote = await pull(user.id);
-        if (!alive) return;
-        if (!remote.length) {
-          await push(nodesRef.current, user.id);
-          knownIds.current = new Set(nodesRef.current.map((n) => n.id));
-          decision.current = 'cloud';
-          setCloudMode('cloud');
-          setCloudLabel('Synced');
-        } else {
-          setCloudPrompt({ count: remote.length, rows: remote });
-          setCloudLabel('Choose a copy');
-          setCloudMode('local');
-        }
-      } catch (e) {
-        setCloudError(String(e.message || e));
-        setCloudMode('error');
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [user]);
-
-  // Push after edits, but only once a copy decision exists.
+  // Push after edits, ~1.4 s after they settle.
   useEffect(() => {
-    if (cloudMode !== 'cloud' || !user || !store.ready) return;
+    if (!configured || !store.ready) return;
     if (skipPush.current) {
       skipPush.current = false;
       return;
     }
-    setCloudLabel('Saving to cloud…');
     clearTimeout(pushTimer.current);
-    pushTimer.current = setTimeout(async () => {
-      try {
-        await push(nodesRef.current, user.id, { knownIds: knownIds.current });
-        knownIds.current = new Set(nodesRef.current.map((n) => n.id));
-        setCloudLabel('Synced');
-        setCloudError('');
-      } catch (e) {
-        setCloudLabel('Sync failed');
-        setCloudError(String(e.message || e));
-      }
-    }, 1600);
+    pushTimer.current = setTimeout(() => runSync(), 1400);
     return () => clearTimeout(pushTimer.current);
-  }, [nodes, cloudMode, user, store.ready]);
+  }, [nodes, store.ready, runSync]);
 
-  const signIn = async (email, password) => {
-    setBusy(true);
-    try {
-      const { error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      return '';
-    } finally {
-      setBusy(false);
-    }
-  };
-  const signUp = async (email, password) => {
-    setBusy(true);
-    try {
-      const { data, error } = await sb.auth.signUp({ email, password });
-      if (error) throw error;
-      return data.session ? 'Account created and signed in.' : 'Check your email to confirm, then sign in.';
-    } finally {
-      setBusy(false);
-    }
-  };
-  const signOut = async () => {
-    await sb.auth.signOut();
-    setAccount(false);
-    setCloudMode('local');
-    setCloudLabel('Local only');
-  };
-  const loadCloud = async () => {
-    if (!cloudPrompt) return;
-    const ok = await ui.confirm({
-      title: 'Load the cloud copy?',
-      body: 'The notebook in this browser will be replaced by the cloud copy. Export a backup first if you are unsure.',
-      confirmText: 'Load cloud copy',
-      danger: false,
-    });
-    if (!ok) return;
-    skipPush.current = true;
-    store.replaceAll(cloudPrompt.rows);
-    knownIds.current = new Set(cloudPrompt.rows.map((n) => n.id));
-    decision.current = 'cloud';
-    setCloudPrompt(null);
-    setCloudMode('cloud');
-    setCloudLabel('Synced');
-    setAccount(false);
-  };
-  const uploadLocal = async () => {
-    const ok = await ui.confirm({
-      title: 'Upload this browser’s notebook?',
-      body: 'The cloud copy will be replaced by what is in this browser. Images will upload too.',
-      confirmText: 'Upload this copy',
-      danger: false,
-    });
-    if (!ok) return;
-    setBusy(true);
-    try {
-      for (const a of await listAssets()) await uploadAsset(user.id, a.id, a.blob, a);
-      await push(nodesRef.current, user.id);
-      knownIds.current = new Set(nodesRef.current.map((n) => n.id));
-      decision.current = 'cloud';
-      setCloudPrompt(null);
-      setCloudMode('cloud');
-      setCloudLabel('Synced');
-      setAccount(false);
-      ui.toast('Notebook uploaded', 'ok');
-    } catch (e) {
-      setCloudError(String(e.message || e));
-    } finally {
-      setBusy(false);
-    }
-  };
-  const uploadedFor = useRef(null);
+  // Poll for other people's edits while the tab is visible.
   useEffect(() => {
-    if (cloudMode !== 'cloud' || !user || uploadedFor.current === user.id) return;
-    uploadedFor.current = user.id;
-    (async () => {
-      try {
-        for (const a of await listAssets()) await uploadAsset(user.id, a.id, a.blob, a);
-      } catch (e) {
-        setCloudError(String(e.message || e));
-      }
-    })();
-  }, [cloudMode, user]);
+    if (!configured || !store.ready || !autoSync) return;
+    const tick = () => {
+      if (document.visibilityState === 'visible' && navigator.onLine !== false) runSync();
+    };
+    const id = setInterval(tick, 20000);
+    document.addEventListener('visibilitychange', tick);
+    window.addEventListener('online', tick);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', tick);
+      window.removeEventListener('online', tick);
+    };
+  }, [configured, store.ready, autoSync, runSync]);
 
   const syncNow = async () => {
-    if (!user) return;
     setBusy(true);
     try {
-      const remote = await pull(user.id);
-      if (remote.length) {
-        skipPush.current = true;
-        store.replaceAll(remote);
-        knownIds.current = new Set(remote.map((n) => n.id));
-        setCloudLabel('Synced');
-        setCloudError('');
-        ui.toast('Pulled the latest cloud copy', 'ok');
-      } else {
-        await push(nodesRef.current, user.id);
-      }
+      await runSync();
+    } finally {
+      setBusy(false);
+    }
+  };
+  const pullCloud = async () => {
+    if (!configured) return;
+    const ok = await ui.confirm({
+      title: 'Replace this browser’s copy?',
+      body: 'Everything here is replaced by the shared notebook from the cloud. Local changes that were never synced are lost.',
+      confirmText: 'Pull cloud copy',
+      danger: true,
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      const remote = await pull();
+      skipPush.current = true;
+      storeRef.current.replaceAll(remote);
+      known.current = new Map(remote.map((n) => [n.id, n.modified || 0]));
+      setSync((x) => ({ ...x, state: 'live', label: 'Shared · synced', error: '', at: Date.now(), count: remote.length }));
+      ui.toast('Pulled the shared notebook', 'ok');
     } catch (e) {
-      setCloudError(String(e.message || e));
+      ui.toast(`Pull failed: ${e.message}`, 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+  const uploadLocal = async () => {
+    if (!configured) return;
+    const ok = await ui.confirm({
+      title: 'Overwrite the shared notebook?',
+      body: 'The cloud copy becomes exactly what is in this browser, including deleting items that only exist in the cloud. Images upload too.',
+      confirmText: 'Overwrite cloud',
+      danger: true,
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      for (const a of await listAssets()) await uploadAsset(a.id, a.blob, a);
+      await push(nodesRef.current, { knownIds: null });
+      known.current = new Map(nodesRef.current.map((n) => [n.id, n.modified || 0]));
+      setSync((x) => ({ ...x, state: 'live', label: 'Shared · synced', error: '', at: Date.now(), count: nodesRef.current.length }));
+      ui.toast('Shared notebook replaced', 'ok');
+    } catch (e) {
+      setSync((x) => ({ ...x, state: 'error', label: 'Sync failed', error: String(e.message || e) }));
     } finally {
       setBusy(false);
     }
@@ -538,19 +528,19 @@ export default function Page() {
         onImport={() => setIo({ open: true, target: importTarget })}
         onExport={() => setIo({ open: true, target: importTarget, tab: 'export' })}
         onAddSubject={() => setAddDlg(semester || { id: null, type: 'semester', title: 'Semester' })}
-        mode={cloudMode === 'cloud' ? 'cloud' : cloudMode === 'error' ? 'error' : cloudLabel.includes('Saving') ? 'syncing' : 'local'}
-        syncLabel={cloudLabel}
+        mode={live ? 'cloud' : syncState === 'error' ? 'error' : syncState === 'syncing' || syncState === 'connecting' ? 'syncing' : 'local'}
+        syncLabel={sync.label}
         onCloud={() => setAccount(true)}
         onToggleSidebar={() => setSidebar((s) => !s)}
         showSidebarToggle={Boolean(subjectId)}
       />
 
-      {cloudMode === 'error' && cloudError && (
+      {syncState === 'error' && sync.error && (
         <div className="paper pink torn-c" style={{ marginBottom: 18, padding: '14px 18px' }}>
           <div className="mono" style={{ fontSize: '.66rem', lineHeight: 1.6 }}>
             <ShieldAlert size={13} style={{ verticalAlign: -2, marginRight: 5 }} />
             <strong>Cloud sync is not available right now.</strong> Your notebook is safe in this browser and keeps working locally.
-            <div style={{ marginTop: 4 }}>{cloudError}</div>
+            <div style={{ marginTop: 4 }}>{sync.error}</div>
             <button className="btn xs" style={{ marginTop: 8 }} onClick={() => setAccount(true)}>Storage settings</button>
           </div>
         </div>
@@ -586,9 +576,9 @@ export default function Page() {
               <div className="code">{subject.code}</div>
             </div>
             <div className="binder-scroll">
-              {cloudMode === 'local' && (
+              {!live && (
                 <div className="offline-note">
-                  Local-only mode. This notebook lives in this browser — export a ZIP backup now and then.
+                  Not synced to the shared notebook. This copy lives in this browser — export a ZIP backup now and then.
                 </div>
               )}
               <Tree
@@ -710,23 +700,24 @@ export default function Page() {
         }}
       />
 
-      <Account
+      <CloudPanel
         open={account}
         onClose={() => setAccount(false)}
         configured={configured}
-        user={user}
-        syncLabel={cloudLabel}
-        syncError={cloudError}
-        onSignIn={signIn}
-        onSignUp={signUp}
-        onSignOut={signOut}
-        onSyncNow={syncNow}
-        cloudPrompt={cloudPrompt}
-        onLoadCloud={loadCloud}
-        onUploadLocal={uploadLocal}
+        workspace={WORKSPACE}
+        host={sync.host}
+        state={syncState}
+        label={sync.label}
+        error={sync.error}
+        lastSync={sync.at}
         localCount={nodes.length}
-        cloudCount={cloudPrompt?.count || 0}
+        cloudCount={sync.count}
         busy={busy}
+        autoSync={autoSync}
+        onAutoSync={setAutoSync}
+        onSyncNow={syncNow}
+        onPullCloud={pullCloud}
+        onUploadLocal={uploadLocal}
       />
 
       <AddEditDialog
@@ -762,7 +753,7 @@ export default function Page() {
         <span className="kbd-hint">
           {store.saveState === 'saving' ? 'saving locally…' : store.saveState === 'error' ? 'local save failed' : 'saved in this browser'}
           {' · '}
-          {cloudMode === 'cloud' ? 'cloud sync on' : configured ? 'cloud configured, local copy active' : 'local mode'}
+          {live ? 'shared cloud sync on' : configured ? 'shared cloud not synced' : 'local mode'}
         </span>
         {store.storageError && <span className="kbd-hint" style={{ color: 'var(--red)' }}>{store.storageError}</span>}
         <span style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>

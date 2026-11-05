@@ -11,10 +11,11 @@ It opens with the five requested subjects, four modules and a syllabus entry eac
 - **Rich-text notes** (TipTap): bold/italic/underline/strike/highlight, headings, lists, checklists, tables, quotes, dividers, links, inline code, highlighted code blocks, LaTeX inline and block equations.
 - **Images**: upload, paste, drag/drop, resize, align, caption, remove. Stored as blobs (never Base64 in the database) and referenced as `asset:<id>`.
 - **Local-first persistence** in IndexedDB, with a localStorage fallback. Data survives refresh and restart. A clear banner says when the app is local-only.
-- **Optional Supabase cloud sync** with per-user RLS, a private storage bucket and a recursive Postgres schema.
+- **Optional shared Supabase sync** — no login: everyone who opens the app edits the same notebook, and rows are open to the anon key by design. Local-only mode works with no configuration.
 - **JSON and ZIP import/export** with validation, hierarchy preview, merge or replace-by-ID, collision detection and progress summaries. ZIP exports include images and work as portable restores.
 - **Responsive layout**: desktop binder sidebar, mobile drawer, full-screen editing, readable typography, empty/loading/error states, toasts and confirmation dialogs.
 - **Default content is not immutable**: every syllabus note, module, topic and subtopic can be changed or deleted. “Restore defaults” re-adds only missing entries without touching your edits.
+- **Ready-made Data Mining modules**: `lib/data/dm-modules.json` holds Modules 1–4 (16 + 11 + 13 + 12 notes) as module → topic → note trees and is seeded as the default Data Mining content. Each module also exists as a standalone, importable JSON file (`mod1.json`–`mod4.json`) in the development home folder.
 
 ## Run locally
 
@@ -25,26 +26,29 @@ npm run dev                      # http://localhost:3000
 
 Without Supabase variables the app is in local mode and stores everything in the browser. Clear site data and the local notebook is gone — use **Export → ZIP + images** for backups.
 
-## Supabase setup (optional cloud sync)
+## Supabase setup (optional shared sync)
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. **Authentication → Providers → Email**: enable it. For a fast personal setup, disable “Confirm email” (or confirm the address after sign-up).
-3. Open **SQL Editor → New query**, paste all of `supabase/schema.sql` and run it. It creates the tables, RLS policies, indexes and the private `note-assets` bucket.
-4. Copy `.env.example` to `.env.local` and fill:
+This project uses a deliberately login-free, shared notebook. There is no sign-up, no email confirmation and no per-user isolation: anyone who can open the site can read **and edit** the same notes. That is intended — treat the deployment URL as a public link.
+
+1. Create a project at [supabase.com](https://supabase.com). You do **not** need to configure Authentication.
+2. Open **SQL Editor → New query**, paste all of `supabase/schema.sql` and run it. It creates the tables, shared RLS policies, indexes and the public `note-assets` bucket. Running it on a project that used the old login-based schema migrates it in place (keeps the rows, moves them into the `public` workspace).
+3. Copy `.env.example` to `.env.local` and fill:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable or anon key>
    ```
-   Only the publishable/anon key belongs in the browser. Never put the service-role key in a `NEXT_PUBLIC_` variable.
-5. Restart `npm run dev`. Click the storage pill in the header, create an account and choose which copy to keep. After that decision, edits push automatically ~1.6 s after they settle, and images upload to the user's private folder.
+   Only the publishable/anon key belongs in the browser, and it is safe to ship because the tables are world-writable. Never put the service-role key in a `NEXT_PUBLIC_` variable.
+4. Restart `npm run dev`. The header pill shows the sync state; no account step is needed. Edits push ~1.4 s after they settle, and other people’s edits are pulled every 20 s while the tab is visible.
 
-**Sync model:** last-writer-wins for the whole notebook. Do not edit the same note on two devices at once; export a ZIP first if you will switch devices mid-edit. Signing out returns the app to local mode without deleting anything locally.
+**Sync model:** the notebook is merged per item — the copy with the newest `modified` timestamp wins, local deletes of previously synced items are propagated, and items only present on one side are kept. This is not a full per-field merge: two people typing in the same note at the same moment can still overwrite each other. Export a ZIP backup before a large edit session.
+
+Manual copy controls live in the header pill → **Shared notebook**: *Sync now*, *Pull cloud copy* and *Overwrite cloud with this browser*.
 
 ### Schema design
 
-`content_nodes` is one recursive table keyed `(user_id, id)` with `parent_id` self-reference, a constrained `type`, and `sort_order`. Note bodies live in `documents`, binaries in the `note-assets` bucket with metadata in `assets`, and imports are logged in `import_history`. This supports arbitrary depth without hard-coding semester → subject → module.
+`content_nodes` is one recursive table keyed `(workspace_id, id)` with `parent_id` self-reference, a constrained `type`, and `sort_order`. Note bodies live in `documents`, binaries in the `note-assets` bucket with metadata in `assets`, and imports are logged in `import_history`. This supports arbitrary depth without hard-coding semester → subject → module.
 
-RLS is `auth.uid() = user_id` on every table, and storage policies require the first path segment to equal the user id.
+`workspace_id` defaults to `'public'` and has no foreign key to auth users. RLS is enabled but the policies allow `anon` and `authenticated` full access. Storage policies allow anonymous uploads and reads on `note-assets`. Override the workspace with `NEXT_PUBLIC_WORKSPACE` if you run several independent notebooks on one project.
 
 ## JSON format
 
@@ -96,7 +100,7 @@ Official content is tagged `official`, import content `imported`, your own work 
 
 ```
 app/                 page shell, layout, global scrapbook design system
-components/          tree, editor, folder view, dialogs, import/export, account
+components/          tree, editor, folder view, dialogs, import/export, shared-notebook panel
 lib/                 store, indexdb, cloud, tree helpers, seeded syllabus, io
 docs/                JSON schema and Supabase setup
 public/              example import template + icon
@@ -107,10 +111,11 @@ scripts/backup.sh    source-only ZIP backup
 ## Known limitations
 
 - Local-only mode is per browser/profile; it is not shared between devices.
+- Shared cloud mode has no login: anyone with the URL can edit or delete notes. Keep private material out of a public deployment.
 - Search is client-side and scans the data already in the notebook.
-- Cloud sync is whole-notebook last-writer-wins rather than per-field merge.
+- Cloud sync merges per item (newest `modified` wins), not per field.
 - PDF export is not implemented; printing the note page uses the print stylesheet.
-- The Supabase project given for development may still need `supabase/schema.sql` run before cloud mode works; the header shows “Cloud not ready” and the reason until then.
+- The Supabase project given for development may still need `supabase/schema.sql` run before sync works; the header shows “Cloud not ready” and the reason until then.
 
 ## Checks
 
