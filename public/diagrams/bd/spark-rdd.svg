@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Spark Execution Model — RDD lineage and stages</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Spark Execution Model - RDD lineage and stages</text>
 
   <!-- input -->
   <rect x="30" y="70" width="110" height="50" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
@@ -30,8 +30,8 @@
   <path d="M 602 95 L 638 95" stroke="#3a3126" stroke-width="2" marker-end="url(#sa)"/>
 
   <!-- stage brackets -->
-  <text x="235" y="155" font-size="11" fill="#16a34a">— narrow transformations, no data movement —</text>
-  <text x="540" y="155" font-size="11" fill="#b45309">— wide transformation = stage boundary —</text>
+  <text x="235" y="155" font-size="11" fill="#16a34a">- narrow transformations, no data movement -</text>
+  <text x="540" y="155" font-size="11" fill="#b45309">- wide transformation = stage boundary -</text>
 
   <!-- DAG / lineage -->
   <rect x="30" y="185" width="640" height="90" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>

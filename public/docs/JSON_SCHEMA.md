@@ -50,8 +50,8 @@ In note HTML, images are referenced as:
 
 ## Import modes
 
-- **Merge (default)** — every imported node gets a fresh id and is appended after existing siblings. Nothing is overwritten. Duplicate ids inside the file are reported and resolved with fresh ids.
-- **Replace by ID** — nodes whose `id` matches an existing node replace that node after an explicit confirmation. Nodes not present in the file are left alone. This is the only mode that can overwrite content.
+- **Merge (default)** - every imported node gets a fresh id and is appended after existing siblings. Nothing is overwritten. Duplicate ids inside the file are reported and resolved with fresh ids.
+- **Replace by ID** - nodes whose `id` matches an existing node replace that node after an explicit confirmation. Nodes not present in the file are left alone. This is the only mode that can overwrite content.
 
 Validation runs before anything is written. Errors block the import; warnings (duplicate ids, version mismatch, collisions) are shown with the hierarchy preview.
 

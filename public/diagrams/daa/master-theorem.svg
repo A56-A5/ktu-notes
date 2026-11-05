@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 470" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Master's Theorem — T(n) = a·T(n/b) + f(n),  a ≥ 1, b &gt; 1</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Master's Theorem - T(n) = a·T(n/b) + f(n),  a ≥ 1, b &gt; 1</text>
 
   <rect x="240" y="50" width="200" height="40" rx="8" fill="#fef3c7" stroke="#3a3126" stroke-width="2"/>
   <text x="340" y="76" font-size="15" text-anchor="middle" fill="#3a3126" font-weight="700">compare f(n) with n^log_b(a)</text>
@@ -38,5 +38,5 @@
   <text x="36" y="404" font-size="13.5" fill="#3a3126">T(n) = T(2n/3) + 1      0&lt;b&lt;1?? not applicable directly; note n^log_b a with b=1.5, a=1 = 1 ⇒ <tspan font-weight="700">Case 2 ⇒ Θ(log n)</tspan></text>
   <text x="36" y="430" font-size="13.5" fill="#3a3126">T(n) = 2T(n/2) + n log n  f(n)=n log n not polynomially larger ⇒ falls between cases (use recursion tree)</text>
 
-  <text x="20" y="468" font-size="13" fill="#7c3aed">Proof is not expected in the exam — apply the correct case and state the bound.</text>
+  <text x="20" y="468" font-size="13" fill="#7c3aed">Proof is not expected in the exam - apply the correct case and state the bound.</text>
 </svg>

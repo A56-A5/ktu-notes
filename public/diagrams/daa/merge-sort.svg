@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Merge Sort — Divide and Conquer</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Merge Sort - Divide and Conquer</text>
 
   <!-- top: unsorted array -->
   <text x="60" y="70" font-size="13" fill="#3a3126" font-weight="700">unsorted</text>

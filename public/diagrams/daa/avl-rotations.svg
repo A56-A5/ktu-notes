@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" font-family="'Segoe UI', system-ui, sans-serif">
   <!-- Title -->
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">AVL Tree Insertion — Balance Factors and Rotations</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">AVL Tree Insertion - Balance Factors and Rotations</text>
 
   <!-- LEFT: unbalanced tree with balance factors (RR case) -->
   <text x="30" y="70" font-size="15" fill="#7c3aed" font-weight="700">RR (imbalance at node 30, heavy right) → single LEFT rotation</text>
@@ -34,7 +34,7 @@
   <text x="400" y="235" font-size="13" text-anchor="middle" fill="#16a34a">0</text>
 
   <!-- ====== BOTTOM ROW: LR case ====== -->
-  <text x="30" y="330" font-size="15" fill="#7c3aed" font-weight="700">LR case: fix with DOUBLE rotation — L on child, then R on node</text>
+  <text x="30" y="330" font-size="15" fill="#7c3aed" font-weight="700">LR case: fix with DOUBLE rotation - L on child, then R on node</text>
 
   <!-- unbalanced: 50(-2) -> L 30(+1) -> R 40 -->
   <ellipse cx="80" cy="380" rx="20" ry="20" fill="#fef3c7" stroke="#3a3126" stroke-width="2"/>

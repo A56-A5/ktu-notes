@@ -27,14 +27,14 @@ export default function CloudPanel({
   const live = state === 'live';
 
   return (
-    <Modal title="Shared notebook" sub="Login-free cloud sync — anyone with the link can edit." onClose={onClose}>
+    <Modal title="Shared notebook" sub="Login-free cloud sync - anyone with the link can edit." onClose={onClose}>
       {configured ? (
         <>
           <div className="note-box" style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
             <Globe size={15} style={{ flex: '0 0 auto', marginTop: 2 }} />
             <div>
               <strong>{localCount}</strong> items in this browser ·{' '}
-              <strong>{cloudCount || '—'}</strong> in the shared notebook
+              <strong>{cloudCount || '-'}</strong> in the shared notebook
               <div className="mono" style={{ fontSize: '.64rem', marginTop: 4, color: 'var(--ink-soft)' }}>
                 {workspace} @ {host || '…'}
               </div>
@@ -64,7 +64,7 @@ export default function CloudPanel({
           </div>
 
           <hr className="divider" />
-          <p className="sub" style={{ marginTop: 0 }}>Manual copy control — use only when the automatic merge gets confusing.</p>
+          <p className="sub" style={{ marginTop: 0 }}>Manual copy control - use only when the automatic merge gets confusing.</p>
           <div className="row">
             <button className="btn" onClick={onPullCloud} disabled={busy}>
               <DownloadCloud size={13} /> Pull cloud copy (replace local)

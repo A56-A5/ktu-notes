@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Stream Data Model — source, stream processor, sink</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Stream Data Model - source, stream processor, sink</text>
 
   <!-- source -->
   <rect x="30" y="70" width="140" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>

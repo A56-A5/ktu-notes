@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================================
-   KTU Notes — scrapbook / torn-paper design system
+   KTU Notes - scrapbook / torn-paper design system
    ============================================================ */
 :root {
   --paper: #f3ead7;
@@ -590,7 +590,7 @@ textarea.field { resize: vertical; min-height: 80px; }
 }
 .ProseMirror .tableWrapper { overflow-x: auto; }
 
-/* highlight.js — warm paper-friendly code colours */
+/* highlight.js - warm paper-friendly code colours */
 .hljs-comment, .hljs-quote { color: #9a8b73; font-style: italic; }
 .hljs-keyword, .hljs-selector-tag, .hljs-literal { color: #e0a86a; }
 .hljs-string, .hljs-attr { color: #b9d18a; }

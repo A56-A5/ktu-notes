@@ -2,7 +2,7 @@ node_modules/
 .next/
 out/
 
-# env / secrets — never commit real keys
+# env / secrets - never commit real keys
 .env
 .env.local
 .env.production

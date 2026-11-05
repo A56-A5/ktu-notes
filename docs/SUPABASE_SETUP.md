@@ -25,7 +25,7 @@ world-writable by design.
    ```
    Optional: `NEXT_PUBLIC_WORKSPACE=public` if you run several independent
    notebooks on one project.
-5. Restart `npm run dev`. The header pill shows sync state — there is no sign-in.
+5. Restart `npm run dev`. The header pill shows sync state - there is no sign-in.
 
 ## Upgrading a project that used the old login schema
 
@@ -39,7 +39,7 @@ world-writable by design.
   and makes the bucket public.
 
 Just run the file again. It aborts with a clear message if two old users owned
-the same node id (it would collide in the shared notebook) — delete those
+the same node id (it would collide in the shared notebook) - delete those
 duplicates first, then re-run.
 
 ## Verifying

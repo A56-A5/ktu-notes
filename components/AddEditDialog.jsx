@@ -75,7 +75,7 @@ export default function AddEditDialog({ open, mode, parent, node, onClose, onSav
       return;
     }
     if (isSubject && !code.trim()) {
-      setError('Course codes keep subjects searchable — add one (or write “no code”).');
+      setError('Course codes keep subjects searchable - add one (or write “no code”).');
       return;
     }
     onSave({
@@ -129,7 +129,7 @@ export default function AddEditDialog({ open, mode, parent, node, onClose, onSav
         className="field"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder={isSemester ? 'Semester 6' : isSubject ? 'e.g. Compiler Design' : 'e.g. Module 2 — Data Preprocessing'}
+        placeholder={isSemester ? 'Semester 6' : isSubject ? 'e.g. Compiler Design' : 'e.g. Module 2 - Data Preprocessing'}
         autoFocus
         onKeyDown={(e) => e.key === 'Enter' && submit()}
       />

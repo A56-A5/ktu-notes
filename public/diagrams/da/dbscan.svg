@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 340" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">DBSCAN — core, border and noise points</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">DBSCAN - core, border and noise points</text>
 
   <!-- clusters -->
   <!-- cluster 1 -->

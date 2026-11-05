@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">HBase Architecture — region servers over HDFS</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">HBase Architecture - region servers over HDFS</text>
 
   <!-- client -->
   <rect x="40" y="60" width="110" height="40" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
@@ -35,7 +35,7 @@
 
   <!-- HDFS -->
   <rect x="90" y="310" width="520" height="45" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
-  <text x="350" y="338" font-size="13" text-anchor="middle" fill="#7f1d1d" font-weight="700">HDFS — durable block storage (WAL and HFiles)</text>
+  <text x="350" y="338" font-size="13" text-anchor="middle" fill="#7f1d1d" font-weight="700">HDFS - durable block storage (WAL and HFiles)</text>
   <line x1="160" y1="260" x2="160" y2="308" stroke="#3a3126" stroke-width="1.6"/>
   <line x1="350" y1="260" x2="350" y2="308" stroke="#3a3126" stroke-width="1.6"/>
   <line x1="540" y1="260" x2="540" y2="308" stroke="#3a3126" stroke-width="1.6"/>

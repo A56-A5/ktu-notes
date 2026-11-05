@@ -399,7 +399,7 @@ export default function Page() {
     try {
       if (kind === 'zip') {
         const r = await exportZip(nodes, [n.id], n.title);
-        ui.toast(`ZIP ready${r.missing ? ` — ${r.missing} image(s) missing` : ''}`, r.missing ? 'error' : 'ok', 5000);
+        ui.toast(`ZIP ready${r.missing ? ` - ${r.missing} image(s) missing` : ''}`, r.missing ? 'error' : 'ok', 5000);
       } else {
         downloadJSON(`${safeName(n.title)}.json`, buildExport(nodes, [n.id]));
         ui.toast('JSON export downloaded', 'ok');
@@ -578,7 +578,7 @@ export default function Page() {
             <div className="binder-scroll">
               {!live && (
                 <div className="offline-note">
-                  Not synced to the shared notebook. This copy lives in this browser — export a ZIP backup now and then.
+                  Not synced to the shared notebook. This copy lives in this browser - export a ZIP backup now and then.
                 </div>
               )}
               <Tree

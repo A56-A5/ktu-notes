@@ -108,7 +108,7 @@ export default function ImportExport({ open, onClose, nodes, semesterId, current
     if (mode === 'replace') {
       const ok = await ui.confirm({
         title: 'Replace matching entries?',
-        body: `Replace mode overwrites existing item(s) whose IDs match this file. Anything not in the file is left alone — no other notes are deleted. This cannot be undone without a backup.`,
+        body: `Replace mode overwrites existing item(s) whose IDs match this file. Anything not in the file is left alone - no other notes are deleted. This cannot be undone without a backup.`,
         confirmText: 'Replace and import',
       });
       if (!ok) return;
@@ -184,7 +184,7 @@ export default function ImportExport({ open, onClose, nodes, semesterId, current
     try {
       if (kind === 'zip') {
         const r = await exportZip(nodes, scopeId ? [scopeId] : null, label);
-        ui.toast(`ZIP backup ready${r.missing ? ` — ${r.missing} image(s) missing` : ''}`, r.missing ? 'error' : 'ok', 5000);
+        ui.toast(`ZIP backup ready${r.missing ? ` - ${r.missing} image(s) missing` : ''}`, r.missing ? 'error' : 'ok', 5000);
       } else {
         const out = buildExport(nodes, scopeId ? [scopeId] : null);
         downloadJSON(`${safeName(label)}.json`, out);
@@ -254,7 +254,7 @@ export default function ImportExport({ open, onClose, nodes, semesterId, current
               )}
               {validation.errors?.length === 0 && (
                 <div className="ok-box">
-                  <Check size={12} /> {validation.count} item(s) validated. {validation.collisions?.length ? `${validation.collisions.length} ID collision(s) detected — merge keeps both, replace overwrites.` : 'No ID collisions.'}
+                  <Check size={12} /> {validation.count} item(s) validated. {validation.collisions?.length ? `${validation.collisions.length} ID collision(s) detected - merge keeps both, replace overwrites.` : 'No ID collisions.'}
                 </div>
               )}
               {validation.warnings?.length > 0 && (

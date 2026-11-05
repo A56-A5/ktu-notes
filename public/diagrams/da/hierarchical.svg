@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Hierarchical Clustering — agglomerative vs divisive</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Hierarchical Clustering - agglomerative vs divisive</text>
 
   <!-- Agglomerative: bottom-up -->
   <text x="150" y="58" font-size="14" fill="#2563eb" font-weight="700" text-anchor="middle">Agglomerative (bottom-up)</text>

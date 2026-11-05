@@ -112,7 +112,7 @@ export default function FolderView({
                   {n.progress === 'done' && <CheckCircle2 size={11} style={{ color: '#6a9a4f', marginLeft: 4, verticalAlign: -1 }} />}
                 </span>
                 <span className="t">{n.title}</span>
-                <span className="sub">{plainText(n.body || '').slice(0, 110) || 'Empty note — open it and start writing.'}</span>
+                <span className="sub">{plainText(n.body || '').slice(0, 110) || 'Empty note - open it and start writing.'}</span>
                 <span className="foot" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   {relativeTime(n.modified)}
                   <button

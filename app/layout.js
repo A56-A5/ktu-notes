@@ -9,7 +9,7 @@ const serif = Source_Serif_4({ subsets: ['latin'], weight: ['400', '600', '700']
 const mono = Space_Mono({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-mono', display: 'swap' });
 
 export const metadata = {
-  title: 'KTU Notes — Semester 5 notebook',
+  title: 'KTU Notes',
   description:
     'A personal, scrapbook-style academic notebook for KTU B.Tech CSE 2024 Scheme Semester 5: recursive modules, rich notes, images and portable backups.',
 };

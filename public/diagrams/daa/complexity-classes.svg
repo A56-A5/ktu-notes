@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Complexity Classes — P, NP, NP-Hard, NP-Complete</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Complexity Classes - P, NP, NP-Hard, NP-Complete</text>
 
   <!-- outer NP-hard ellipse -->
   <ellipse cx="350" cy="200" rx="300" ry="130" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
@@ -22,7 +22,7 @@
 
   <!-- Legend -->
   <rect x="80" y="300" width="540" height="62" rx="8" fill="#f8f5ec" stroke="#d8c9a8" stroke-width="1.5"/>
-  <text x="100" y="322" font-size="12.5" fill="#3a3126"><tspan font-weight="700">P</tspan> — decision problems solvable in polynomial time (sorting, shortest path).</text>
-  <text x="100" y="342" font-size="12.5" fill="#3a3126"><tspan font-weight="700">NP</tspan> — decision problems whose YES answers can be verified in polynomial time; P ⊆ NP.</text>
-  <text x="100" y="362" font-size="12.5" fill="#3a3126">Open question: is P = NP? (the P vs NP problem — one of the Clay Millennium Problems).</text>
+  <text x="100" y="322" font-size="12.5" fill="#3a3126"><tspan font-weight="700">P</tspan> - decision problems solvable in polynomial time (sorting, shortest path).</text>
+  <text x="100" y="342" font-size="12.5" fill="#3a3126"><tspan font-weight="700">NP</tspan> - decision problems whose YES answers can be verified in polynomial time; P ⊆ NP.</text>
+  <text x="100" y="362" font-size="12.5" fill="#3a3126">Open question: is P = NP? (the P vs NP problem - one of the Clay Millennium Problems).</text>
 </svg>

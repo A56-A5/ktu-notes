@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">HDFS Architecture — NameNode and DataNodes</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">HDFS Architecture - NameNode and DataNodes</text>
 
   <!-- NameNode -->
   <rect x="270" y="60" width="160" height="60" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>

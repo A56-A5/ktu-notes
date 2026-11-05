@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'Segoe UI', system-ui, sans-serif">
-  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Dijkstra's Shortest Path — example graph</text>
+  <text x="20" y="30" font-size="18" fill="#3a3126" font-weight="700">Dijkstra's Shortest Path - example graph</text>
   <text x="20" y="52" font-size="13" fill="#3a3126">Find shortest distances from source A to every other vertex.</text>
 
   <!-- nodes -->

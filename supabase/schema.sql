@@ -1,5 +1,5 @@
 -- ============================================================================
--- KTU Notes — Supabase schema for a SHARED, LOGIN-FREE notebook
+-- KTU Notes - Supabase schema for a SHARED, LOGIN-FREE notebook
 -- Run this whole file in the Supabase SQL editor (Dashboard → SQL → New query).
 -- Safe to re-run: IF NOT EXISTS everywhere, DROP POLICY IF EXISTS before create.
 --
@@ -8,7 +8,7 @@
 -- Note bodies live in `documents`, binaries live in Storage and are described
 -- by `assets`. There is NO authentication: every row belongs to one shared
 -- workspace id (default 'public') and anon + authenticated may read and write.
--- Treat the project URL as a public link — anyone who has it can edit.
+-- Treat the project URL as a public link - anyone who has it can edit.
 --
 -- Upgrading a project that used the old login-based schema? This file migrates
 -- it in place: `user_id` is renamed to `workspace_id`, the auth.users foreign

@@ -7,7 +7,7 @@ const PROMPT = `You are generating content for a personal KTU study-notes app.
 TASK
 Create one complete, valid JSON file that I can import into the app at the Semester 5 level. The file must describe one subject with its modules, topics, subtopics and real study notes.
 
-OUTPUT FORMAT — return JSON only, no markdown fences, no commentary:
+OUTPUT FORMAT - return JSON only, no markdown fences, no commentary:
 {
   "format": "ktu-notes",
   "version": 1,
@@ -63,7 +63,7 @@ REQUIRED SHAPE
 - Each topic contains 1 or more note nodes with real content.
 - Keep the syllabus separate from personal notes. You may add folders at the end for "Personal Notes", "Previous Year Questions" and "Resources".
 
-NOTE BODY HTML — use only this subset:
+NOTE BODY HTML - use only this subset:
 <p>, <h2>, <h3>, <ul>, <ol>, <li>, <strong>, <em>, <code>, <pre><code>, <blockquote>, <hr>, <table>, <thead>, <tbody>, <tr>, <th>, <td>, <a href="...">, <br>.
 Do not use scripts, styles, classes, iframes or external images.
 Inline maths: $E = mc^2$. Display maths: $$ ... $$.
@@ -96,7 +96,7 @@ Notes depth: <e.g. concise revision notes, 2-4 short paragraphs per subtopic>
 const PROMPT_EXTRA = `You are adding more material to an existing KTU Notes notebook.
 
 TASK
-Produce a valid JSON file that I will import into one subject or folder. Do not repeat the subject node — start with modules, topics, notes or folders, because the app adds them inside the folder I choose.
+Produce a valid JSON file that I will import into one subject or folder. Do not repeat the subject node - start with modules, topics, notes or folders, because the app adds them inside the folder I choose.
 
 OUTPUT
 {
@@ -141,7 +141,7 @@ function Code({ children }) {
 }
 
 export const metadata = {
-  title: 'AI content guide · KTU Notes',
+  title: 'KTU Notes',
   description: 'A ready-to-copy prompt that makes any AI generate valid KTU Notes JSON.',
 };
 
@@ -173,7 +173,7 @@ export default function AiGuidePage() {
 
       <section className="paper white torn-c" style={{ marginBottom: 22 }}>
         <div className="section-head" style={{ marginTop: 0 }}>
-          <h3><Sparkles size={17} style={{ verticalAlign: -2, marginRight: 5 }} /> Prompt 1 — a whole subject</h3>
+          <h3><Sparkles size={17} style={{ verticalAlign: -2, marginRight: 5 }} /> Prompt 1 - a whole subject</h3>
           <span className="rule" />
           <CopyButton text={PROMPT} label="Copy prompt" />
         </div>
@@ -186,7 +186,7 @@ export default function AiGuidePage() {
 
       <section className="paper white torn-d" style={{ marginBottom: 22 }}>
         <div className="section-head" style={{ marginTop: 0 }}>
-          <h3>Prompt 2 — add notes to an existing folder</h3>
+          <h3>Prompt 2 - add notes to an existing folder</h3>
           <span className="rule" />
           <CopyButton text={PROMPT_EXTRA} label="Copy prompt" />
         </div>

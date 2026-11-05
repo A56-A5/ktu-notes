@@ -157,7 +157,7 @@ export default function Home({
                 <Star size={16} fill={s.pinned ? '#d99a3d' : 'none'} color={s.pinned ? '#a06a1f' : 'var(--ink-soft)'} />
               </button>
               <h4>{s.title}</h4>
-              <p className="desc">{s.description || 'No description yet — open the subject to add one.'}</p>
+              <p className="desc">{s.description || 'No description yet - open the subject to add one.'}</p>
               <div className="progress-line" title={`${pct}% of notes marked studied`}>
                 <span style={{ width: `${pct}%` }} />
               </div>
