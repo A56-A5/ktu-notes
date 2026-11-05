@@ -442,6 +442,25 @@ textarea.field { resize: vertical; min-height: 80px; }
 .badge.imported { background: #f2e2c4; border-color: #b08a4a; color: #7a5a1f; }
 .badge.unverified { background: #f7dfe2; border-color: #b4553f; color: #8b3a2a; }
 .badge.done { background: #cfe0c2; border-color: #6a9a4f; color: #3f5f2c; }
+.badge.exam { background: #f3e6cf; border-color: #b68b46; color: #7a5a1f; display: inline-flex; align-items: center; gap: 4px; }
+.subject-card .exam-line { display: inline-flex; align-items: center; gap: 3px; color: #7a5a1f; }
+.exam-strip { margin-bottom: 18px; }
+.exam-list { list-style: none; margin: 10px 0 8px; padding: 0; }
+.exam-list li + li { border-top: 1px dotted var(--line); }
+.exam-row {
+  width: 100%; display: grid; grid-template-columns: 92px 1fr auto 84px; gap: 10px; align-items: baseline;
+  background: none; border: 0; padding: 7px 4px; text-align: left; cursor: pointer; font: inherit;
+  color: var(--ink); border-radius: 4px;
+}
+.exam-row:hover { background: rgba(240, 223, 164, .35); }
+.exam-row .ec { font-size: .68rem; color: #33566a; }
+.exam-row .et { font-size: .88rem; }
+.exam-row .ed { font-size: .8rem; font-weight: 600; color: #7a5a1f; white-space: nowrap; }
+.exam-row .es { font-size: .64rem; color: var(--ink-soft); text-align: right; }
+@media (max-width: 640px) {
+  .exam-row { grid-template-columns: 1fr auto; }
+  .exam-row .es { display: none; }
+}
 
 .mini-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
 .mini-card {
@@ -578,6 +597,15 @@ textarea.field { resize: vertical; min-height: 80px; }
 .ProseMirror .image-caption:empty::before { content: "Add a caption…"; color: var(--ink-faint); }
 .ProseMirror .katex { font-size: 1.05em; }
 .ProseMirror .katex-display { margin: .8em 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+/* Math rendering (lib/math-render.js) */
+.ProseMirror .math-inline { display: inline; padding: 0 1px; }
+.ProseMirror .math-inline .katex { font-size: 1.02em; }
+.ProseMirror .math-block {
+  display: block; text-align: center; padding: 2px 0;
+  overflow-x: auto; overflow-y: hidden;
+}
+.ProseMirror .math-block .katex-display { margin: .35em 0; }
+.ProseMirror .math-block .katex { font-size: 1.1em; }
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder); float: left; color: var(--ink-faint); pointer-events: none; height: 0;
 }

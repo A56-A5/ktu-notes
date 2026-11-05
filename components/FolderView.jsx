@@ -2,8 +2,10 @@
 import {
   Plus, MoreHorizontal, FileText, Folder, Layers, Hash, Paperclip, BookOpen,
   CheckCircle2, Circle, Download, Upload, RotateCcw, Pencil, Trash2, ArrowUpRight,
+  CalendarDays,
 } from 'lucide-react';
 import { childrenOf, descendants, isNote, progressOf, relativeTime, plainText } from '../lib/tree';
+import { examInfo, formatExamDate, EXAM_SESSIONS } from '../lib/syllabus';
 
 const ICON = { folder: Folder, module: Layers, topic: Hash, note: FileText, resource: Paperclip, subject: BookOpen };
 
@@ -28,6 +30,7 @@ export default function FolderView({
   const pct = node.type === 'subject' ? progressOf(nodes, node.id) : 0;
   const isSubject = node.type === 'subject';
   const isModule = node.type === 'module';
+  const exam = isSubject ? examInfo(node) : null;
 
   return (
     <div>
@@ -45,6 +48,17 @@ export default function FolderView({
           <span className={`badge ${node.source || 'personal'}`}>{node.source || 'personal'}</span>
           {node.unverified && <span className="badge unverified">unverified</span>}
           {isSubject && <span className="badge">{folders.filter((f) => f.type === 'module').length} modules</span>}
+          {isSubject && exam && (
+            <span
+              className="badge exam"
+              title={`${EXAM_SESSIONS[exam.session] || exam.session || 'Session to be announced'}${
+                exam.provisional ? ' - provisional date' : ''
+              }`}
+            >
+              <CalendarDays size={11} /> Exam {formatExamDate(exam.date)}
+              {exam.provisional ? ' (provisional)' : ''}
+            </span>
+          )}
           <span className="badge">{noteCount} notes</span>
           {node.accessed && <span className="badge">opened {relativeTime(node.accessed)}</span>}
         </div>

@@ -2,8 +2,10 @@
 import { useMemo } from 'react';
 import {
   BookOpen, Plus, Star, MoreHorizontal, ArrowRight, Search, Sparkles, FolderOpen,
+  CalendarDays,
 } from 'lucide-react';
 import { childrenOf, descendants, isNote, progressOf, relativeTime, breadcrumbText, plainText } from '../lib/tree';
+import { examInfo, formatExamDate } from '../lib/syllabus';
 
 const TONES = ['', 'blue', 'green', 'pink', 'violet'];
 
@@ -28,6 +30,14 @@ export default function Home({
     // subject in the notebook instead of a blank home page.
     return scoped.length ? scoped : nodes.filter((n) => n.type === 'subject');
   }, [nodes, semester]);
+  const examRows = useMemo(
+    () =>
+      subjects
+        .map((subject) => ({ subject, exam: examInfo(subject) }))
+        .filter((r) => r.exam)
+        .sort((a, b) => String(a.exam.date).localeCompare(String(b.exam.date))),
+    [subjects]
+  );
   const stats = useMemo(() => {
     const all = semester ? descendants(nodes, semester.id) : nodes.filter((n) => n.type !== 'semester');
     const notes = all.filter(isNote);
@@ -129,6 +139,35 @@ export default function Home({
         </div>
       )}
 
+      {examRows.length > 0 && (
+        <section className="paper white exam-strip torn-c">
+          <h3>
+            <CalendarDays size={16} style={{ verticalAlign: '-2px', marginRight: 6 }} />
+            Exam schedule
+            <span className="kbd-hint" style={{ marginLeft: 8, fontWeight: 400 }}>
+              end-semester dates for these subjects
+            </span>
+          </h3>
+          <ul className="exam-list">
+            {examRows.map(({ subject, exam }) => (
+              <li key={subject.id}>
+                <button className="exam-row" onClick={() => onOpenSubject(subject.id)}>
+                  <span className="ec mono">{subject.code || 'SUBJECT'}</span>
+                  <span className="et">{subject.title}</span>
+                  <span className="ed">{formatExamDate(exam.date)}</span>
+                  <span className="es mono">{exam.session || ''}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="kbd-hint" style={{ marginBottom: 0 }}>
+            {examRows.some((r) => r.exam.provisional)
+              ? 'Provisional - correct them in the Exam Schedule note under the semester, or per subject.'
+              : 'Dates come from the Exam Schedule note under the semester; a subject’s own date wins.'}
+          </p>
+        </section>
+      )}
+
       <div className="subject-grid">
         {sorted.map((s, i) => {
           const kids = childrenOf(nodes, s.id);
@@ -136,6 +175,7 @@ export default function Home({
           const notes = all.filter(isNote);
           const modules = kids.filter((k) => k.type === 'module').length;
           const pct = progressOf(nodes, s.id);
+          const exam = examInfo(s);
           return (
             <article
               key={s.id}
@@ -168,6 +208,11 @@ export default function Home({
               </div>
               <div className="meta" style={{ marginTop: 4 }}>
                 <span>{s.accessed ? `opened ${relativeTime(s.accessed)}` : 'not opened yet'}</span>
+                {exam && (
+                  <span className="exam-line" title={exam.provisional ? 'Provisional date' : 'Exam date'}>
+                    <CalendarDays size={11} /> {formatExamDate(exam.date)}
+                  </span>
+                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}>
                 <span className="open-cue">Open folder <ArrowRight size={13} /></span>

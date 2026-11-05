@@ -14,7 +14,7 @@ import TableHeader from '@tiptap/extension-table-header';
 import Placeholder from '@tiptap/extension-placeholder';
 import Highlight from '@tiptap/extension-highlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-import Mathematics from '@tiptap/extension-mathematics';
+import MathRender from '../lib/math-render';
 import { createLowlight, common } from 'lowlight';
 import 'katex/dist/katex.min.css';
 import {
@@ -192,7 +192,7 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
         Placeholder.configure({ placeholder: 'Start writing… use the toolbar for headings, lists, tables, images and equations.' }),
         Highlight,
         CodeBlockLowlight.configure({ lowlight }),
-        Mathematics.configure({ katexOptions: { throwOnError: false } }),
+        MathRender,
       ],
       editorProps: {
         attributes: { class: 'ProseMirror', spellcheck: 'true' },
