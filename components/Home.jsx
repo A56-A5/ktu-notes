@@ -164,8 +164,8 @@ export default function Home({
             ))}
           </ul>
           <p className="kbd-hint" style={{ marginBottom: 0 }}>
-            Slots A-E from the Exam Schedule note under Semester 5. Codes are the printed timetable codes
-            (PBCDT504, PECDT525 differ from the subject codes); a subject's own exam date wins over the table.
+            Slots A-E from the Exam Schedule note under Semester 5. A subject's own exam date wins over the
+            table, so you can move a date without touching this list.
           </p>
         </section>
       )}

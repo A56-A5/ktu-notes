@@ -6,7 +6,7 @@ It opens with the five requested subjects, four modules and a syllabus entry eac
 
 ## What it does
 
-- **Home page** with the five subjects (`PECST525 Data Mining`, `PCCST501 Computer Networks`, `PCCST502 DAA`, `PCCDT503 Data Analytics`, `PCCDT504 Big Data Processing`), search, pinned subjects, recently opened items, note/module counts and study progress. Data Mining is pinned and first.
+- **Home page** with the five subjects (`PECDT525 Data Mining`, `PCCST501 Computer Networks`, `PCCST502 DAA`, `PCCDT503 Data Analytics`, `PBCDT504 Big Data Processing`), search, pinned subjects, recently opened items, note/module counts and study progress. Data Mining is pinned and first.
 - **Unlimited recursive tree** of semesters, subjects, folders, modules, topics, subtopics, notes and resources. Add, rename, edit, delete, duplicate, move, reorder, expand/collapse and drag-and-drop. Breadcrumbs everywhere.
 - **Rich-text notes** (TipTap): bold/italic/underline/strike/highlight, headings, lists, checklists, tables, quotes, dividers, links, inline code, highlighted code blocks, LaTeX inline and block equations.
 - **Images**: upload, paste, drag/drop, resize, align, caption, remove. Stored as blobs (never Base64 in the database) and referenced as `asset:<id>`.
@@ -94,8 +94,8 @@ Images in note HTML are `asset:<id>` references. Plain JSON keeps the references
 Module numbering and topic wording follow the published KTU 2024 Scheme curriculum:
 
 - B.Tech Curriculum 2024, Computer Science and Engineering (Group A), Semester 5 - PCCST501, PCCST502.
-- B.Tech Curriculum 2024, Computer Science and Engineering (Data Science), Semester 5 - PCCDT503, and Big Data Processing (printed as **PBCDT504**; the requested code **PCCDT504** is used in the app and noted on its syllabus).
-- KTU S5 syllabus compilation (mgmits.ac.in) - PECST525 Data Mining.
+- B.Tech Curriculum 2024, Computer Science and Engineering (Data Science), Semester 5 - PCCDT503, and **PBCDT504** Big Data Processing (PBL).
+- KTU S5 syllabus compilation (mgmits.ac.in) - PECDT525 Data Mining.
 
 Official content is tagged `official`, import content `imported`, your own work `personal`. Syllabus entries can be edited or deleted; `Syllabus` notes carry a source/verification section. If a university revision changes a module, edit the entry - nothing is locked.
 
