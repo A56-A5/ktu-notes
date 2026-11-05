@@ -413,13 +413,6 @@ textarea.field { resize: vertical; min-height: 80px; }
 .tree-children { position: relative; }
 .tree-empty { font-family: var(--mono); font-size: .62rem; color: var(--ink-faint); padding: 6px 0 8px 34px; }
 
-.offline-note {
-  margin: 0 8px 8px; padding: 8px 10px;
-  font-family: var(--mono); font-size: .6rem; line-height: 1.5;
-  border: 1.2px dashed rgba(58,49,38,.4); border-radius: 4px;
-  background: rgba(240,223,164,.35); color: var(--ink-soft);
-}
-
 /* main pane */
 .pane { min-width: 0; padding-bottom: 40px; }
 .crumb-bar {

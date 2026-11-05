@@ -1,6 +1,6 @@
 'use client';
 import {
-  Globe, RefreshCw, ShieldAlert, DownloadCloud, UploadCloud, Zap,
+  Globe, RefreshCw, ShieldAlert, DownloadCloud, UploadCloud, Zap, Lock, Users,
 } from 'lucide-react';
 import { Modal, Spinner } from './ui';
 
@@ -8,6 +8,8 @@ export default function CloudPanel({
   open,
   onClose,
   configured,
+  mode,
+  onModeChange,
   workspace,
   host,
   state,
@@ -25,12 +27,50 @@ export default function CloudPanel({
 }) {
   if (!open) return null;
   const live = state === 'live';
+  const localOnly = mode === 'local';
 
   return (
-    <Modal title="Shared notebook" sub="Login-free cloud sync - anyone with the link can edit." onClose={onClose}>
-      {configured ? (
+    <Modal
+      title="Notebook mode"
+      sub={localOnly ? 'Private to this browser.' : 'Login-free shared notebook.'}
+      onClose={onClose}
+    >
+      <div className="row" style={{ gap: 8, marginBottom: 4 }} role="group" aria-label="Notebook mode">
+        <button
+          className={`btn sm ${!localOnly ? 'primary' : ''}`}
+          onClick={() => onModeChange('shared')}
+          disabled={!configured || !localOnly}
+          title={configured ? 'Sync with the shared notebook' : 'Add Supabase keys to enable'}
+        >
+          <Users size={13} /> Shared notebook
+        </button>
+        <button
+          className={`btn sm ${localOnly ? 'primary' : ''}`}
+          onClick={() => onModeChange('local')}
+          disabled={localOnly}
+        >
+          <Lock size={13} /> Local only
+        </button>
+      </div>
+
+      {localOnly ? (
         <>
-          <div className="note-box" style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+          <div className="note-box" style={{ marginTop: 12 }}>
+            <Lock size={13} style={{ verticalAlign: -2 }} /> Cloud sync is off. Nothing is uploaded, downloaded or
+            polled, and this notebook exists only in this browser's storage. The ZIP export is the only backup.
+          </div>
+          <div className="warn-box" style={{ marginTop: 12 }}>
+            <ShieldAlert size={13} style={{ verticalAlign: -2 }} /> Clearing site data, a different browser or a
+            different device will not see this notebook. Export a ZIP backup regularly.
+          </div>
+          <div className="note-box" style={{ marginTop: 12 }}>
+            <strong>{localCount}</strong> items in this browser. Switching back to Shared notebook merges these edits
+            with the cloud copy (newest edit wins per item).
+          </div>
+        </>
+      ) : configured ? (
+        <>
+          <div className="note-box" style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
             <Globe size={15} style={{ flex: '0 0 auto', marginTop: 2 }} />
             <div>
               <strong>{localCount}</strong> items in this browser ·{' '}
@@ -97,7 +137,8 @@ NEXT_PUBLIC_WORKSPACE=public`}
           </pre>
           <p className="kbd-hint">
             Then run <code>supabase/schema.sql</code> once in the Supabase SQL editor. After that, anyone who opens this
-            site can read and edit the same notebook. The service-role key is never used in the browser.
+            site can read and edit the same notebook, or you can stay in Local only mode. The service-role key is never
+            used in the browser.
           </p>
         </>
       )}

@@ -10,12 +10,13 @@ It opens with the five requested subjects, four modules and a syllabus entry eac
 - **Unlimited recursive tree** of semesters, subjects, folders, modules, topics, subtopics, notes and resources. Add, rename, edit, delete, duplicate, move, reorder, expand/collapse and drag-and-drop. Breadcrumbs everywhere.
 - **Rich-text notes** (TipTap): bold/italic/underline/strike/highlight, headings, lists, checklists, tables, quotes, dividers, links, inline code, highlighted code blocks, LaTeX inline and block equations.
 - **Images**: upload, paste, drag/drop, resize, align, caption, remove. Stored as blobs (never Base64 in the database) and referenced as `asset:<id>`.
-- **Local-first persistence** in IndexedDB, with a localStorage fallback. Data survives refresh and restart. A clear banner says when the app is local-only.
-- **Optional shared Supabase sync** - no login: everyone who opens the app edits the same notebook, and rows are open to the anon key by design. Local-only mode works with no configuration.
+- **Local-first persistence** in IndexedDB, with a localStorage fallback. Data survives refresh and restart.
+- **Optional shared Supabase sync** - no login: everyone who opens the app edits the same notebook, and rows are open to the anon key by design.
+- **Local only mode** - switch the notebook to this browser from the cloud panel. Nothing is uploaded, downloaded or polled until you switch back.
 - **JSON and ZIP import/export** with validation, hierarchy preview, merge or replace-by-ID, collision detection and progress summaries. ZIP exports include images and work as portable restores.
 - **Responsive layout**: desktop binder sidebar, mobile drawer, full-screen editing, readable typography, empty/loading/error states, toasts and confirmation dialogs.
 - **Default content is not immutable**: every syllabus note, module, topic and subtopic can be changed or deleted. “Restore defaults” re-adds only missing entries without touching your edits.
-- **Ready-made Data Mining modules**: `lib/data/dm-modules.json` holds Modules 1–4 (16 + 11 + 13 + 12 notes) as module → topic → note trees and is seeded as the default Data Mining content. Each module also exists as a standalone, importable JSON file (`mod1.json`–`mod4.json`) in the development home folder.
+- **Ready-made Data Mining modules**: `lib/data/dm-modules.json` holds Modules 1–4 (16 + 16 + 18 + 16 notes, 240 KB of written material) as module → topic → note trees and is seeded as the default Data Mining content. Each module also exists as a standalone, importable JSON file (`mod1.json`–`mod4.json`) in the development home folder.
 
 ## Run locally
 
@@ -24,7 +25,7 @@ npm install --legacy-peer-deps   # TipTap peer versions need this flag
 npm run dev                      # http://localhost:3000
 ```
 
-Without Supabase variables the app is in local mode and stores everything in the browser. Clear site data and the local notebook is gone - use **Export → ZIP + images** for backups.
+Without Supabase variables the app is in local mode and stores everything in the browser. With them configured, the notebook syncs by default; open the cloud panel (header pill) and choose **Local only** to keep it private to this browser. Clear site data and the local notebook is gone - use **Export → ZIP + images** for backups.
 
 ## Supabase setup (optional shared sync)
 
@@ -39,6 +40,8 @@ This project uses a deliberately login-free, shared notebook. There is no sign-u
    ```
    Only the publishable/anon key belongs in the browser, and it is safe to ship because the tables are world-writable. Never put the service-role key in a `NEXT_PUBLIC_` variable.
 4. Restart `npm run dev`. The header pill shows the sync state; no account step is needed. Edits push ~1.4 s after they settle, and other people’s edits are pulled every 20 s while the tab is visible.
+
+**Notebook modes:** the header pill opens a panel with two modes. *Shared notebook* keeps this browser in sync with everyone else who opens the site. *Local only* stops all uploads, downloads and polling, so the notebook never leaves this browser (use it to keep a private copy or to work offline); switching back merges the local edits with the cloud copy.
 
 **Sync model:** the notebook is merged per item - the copy with the newest `modified` timestamp wins, local deletes of previously synced items are propagated, and items only present on one side are kept. This is not a full per-field merge: two people typing in the same note at the same moment can still overwrite each other. Export a ZIP backup before a large edit session.
 

@@ -57,6 +57,17 @@ export default function Page() {
     host: '',
   });
   const [autoSync, setAutoSync] = useState(true);
+  const [mode, setMode] = useState('shared');
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ktu-notes-cloud-mode');
+      if (saved === 'local' || saved === 'shared') setMode(saved);
+    } catch {}
+  }, []);
+  const localOnly = mode === 'local';
+  const sharing = configured && !localOnly;
+  const sharingRef = useRef(sharing);
+  sharingRef.current = sharing;
   const [busy, setBusy] = useState(false);
   const pushTimer = useRef(null);
   const skipPush = useRef(true);
@@ -91,7 +102,7 @@ export default function Page() {
   // merges it with what is in this browser (newest `modified` wins per node),
   // then pushes the merged result back.
   const runSync = useCallback(async () => {
-    if (!configured || syncing.current) return;
+    if (!sharingRef.current || syncing.current) return;
     syncing.current = true;
     try {
       setSync((x) => ({ ...x, state: 'syncing', label: 'Syncing…', error: '' }));
@@ -152,7 +163,7 @@ export default function Page() {
 
   // Images are mirrored through the same anonymous connection.
   useEffect(() => {
-    if (!configured) return;
+    if (!sharing) return;
     hooks.put = (id, blob, meta) => uploadAsset(id, blob, meta);
     hooks.get = (id) => downloadAsset(id);
     hooks.del = (ids) => deleteAssets(ids);
@@ -160,17 +171,43 @@ export default function Page() {
     return () => {
       hooks.put = hooks.get = hooks.del = null;
     };
-  }, []);
+  }, [sharing]);
 
-  // First sync once the local notebook has loaded.
+  // First sync once the local notebook has loaded (or when switching back).
   useEffect(() => {
-    if (!configured || !store.ready) return;
+    if (!sharing || !store.ready) return;
     runSync();
-  }, [configured, store.ready, runSync]);
+  }, [sharing, store.ready, runSync]);
+
+  // Switching modes stops or starts the whole cloud layer.
+  useEffect(() => {
+    if (!configured) return;
+    if (localOnly) {
+      setSync({
+        state: 'off',
+        label: 'Local only',
+        error: '',
+        at: sync.at,
+        count: nodesRef.current.length,
+        host: '',
+      });
+    }
+  }, [localOnly, configured]);
+
+  const changeMode = (next) => {
+    setMode(next);
+    try {
+      localStorage.setItem('ktu-notes-cloud-mode', next);
+    } catch {}
+    ui.toast(
+      next === 'local' ? 'Local only - nothing leaves this browser' : 'Shared notebook on - syncing edits',
+      'ok'
+    );
+  };
 
   // Push after edits, ~1.4 s after they settle.
   useEffect(() => {
-    if (!configured || !store.ready) return;
+    if (!sharing || !store.ready) return;
     if (skipPush.current) {
       skipPush.current = false;
       return;
@@ -182,7 +219,7 @@ export default function Page() {
 
   // Poll for other people's edits while the tab is visible.
   useEffect(() => {
-    if (!configured || !store.ready || !autoSync) return;
+    if (!sharing || !store.ready || !autoSync) return;
     const tick = () => {
       if (document.visibilityState === 'visible' && navigator.onLine !== false) runSync();
     };
@@ -194,7 +231,7 @@ export default function Page() {
       document.removeEventListener('visibilitychange', tick);
       window.removeEventListener('online', tick);
     };
-  }, [configured, store.ready, autoSync, runSync]);
+  }, [sharing, store.ready, autoSync, runSync]);
 
   const syncNow = async () => {
     setBusy(true);
@@ -205,7 +242,7 @@ export default function Page() {
     }
   };
   const pullCloud = async () => {
-    if (!configured) return;
+    if (!sharing) return;
     const ok = await ui.confirm({
       title: 'Replace this browser’s copy?',
       body: 'Everything here is replaced by the shared notebook from the cloud. Local changes that were never synced are lost.',
@@ -228,7 +265,7 @@ export default function Page() {
     }
   };
   const uploadLocal = async () => {
-    if (!configured) return;
+    if (!sharing) return;
     const ok = await ui.confirm({
       title: 'Overwrite the shared notebook?',
       body: 'The cloud copy becomes exactly what is in this browser, including deleting items that only exist in the cloud. Images upload too.',
@@ -528,7 +565,7 @@ export default function Page() {
         onImport={() => setIo({ open: true, target: importTarget })}
         onExport={() => setIo({ open: true, target: importTarget, tab: 'export' })}
         onAddSubject={() => setAddDlg(semester || { id: null, type: 'semester', title: 'Semester' })}
-        mode={live ? 'cloud' : syncState === 'error' ? 'error' : syncState === 'syncing' || syncState === 'connecting' ? 'syncing' : 'local'}
+        mode={localOnly ? 'local' : live ? 'cloud' : syncState === 'error' ? 'error' : syncState === 'syncing' || syncState === 'connecting' ? 'syncing' : 'local'}
         syncLabel={sync.label}
         onCloud={() => setAccount(true)}
         onToggleSidebar={() => setSidebar((s) => !s)}
@@ -576,11 +613,6 @@ export default function Page() {
               <div className="code">{subject.code}</div>
             </div>
             <div className="binder-scroll">
-              {!live && (
-                <div className="offline-note">
-                  Not synced to the shared notebook. This copy lives in this browser - export a ZIP backup now and then.
-                </div>
-              )}
               <Tree
                 nodes={nodes}
                 subjectId={subject.id}
@@ -704,6 +736,8 @@ export default function Page() {
         open={account}
         onClose={() => setAccount(false)}
         configured={configured}
+        mode={mode}
+        onModeChange={changeMode}
         workspace={WORKSPACE}
         host={sync.host}
         state={syncState}
@@ -753,7 +787,7 @@ export default function Page() {
         <span className="kbd-hint">
           {store.saveState === 'saving' ? 'saving locally…' : store.saveState === 'error' ? 'local save failed' : 'saved in this browser'}
           {' · '}
-          {live ? 'shared cloud sync on' : configured ? 'shared cloud not synced' : 'local mode'}
+          {localOnly ? 'local only - nothing is uploaded' : live ? 'shared cloud sync on' : configured ? 'shared cloud not synced' : 'local mode'}
         </span>
         {store.storageError && <span className="kbd-hint" style={{ color: 'var(--red)' }}>{store.storageError}</span>}
         <span style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>

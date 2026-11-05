@@ -59,3 +59,23 @@ duplicates first, then re-run.
 | `new row violates row-level security policy` | The anon role has no grants/policies yet. Re-run the RLS/grants section of `supabase/schema.sql`. |
 | Two people edit the same note at once | Merge is per item (newest `modified` wins). Last writer wins on that note; export a ZIP before a big shared edit session. |
 | Someone deleted something | Anyone with the link can delete. There is no undo across devices; keep a ZIP backup. |
+
+## Notebook modes
+
+The header pill opens the notebook panel:
+
+- **Shared notebook** syncs this browser with the workspace (default when the
+  Supabase variables are set and `supabase/schema.sql` has been run).
+- **Local only** disables push, pull and polling completely. Nothing leaves
+  the browser, and the choice is remembered per browser.
+
+Switching back to Shared notebook merges the local edits with the cloud copy
+(newest `modified` wins per item). The mode is stored in `localStorage` under
+`ktu-notes-cloud-mode`.
+
+## Refreshing the built-in Data Mining modules
+
+`lib/data/dm-modules.json` is versioned with `LIBRARY_VERSION` in `lib/seed.js`.
+When it changes, bump that number: existing browsers replace the old seeded
+Data Mining subtree on the next load, while notes the user created under it are
+kept (re-parented to the subject). No manual clearing of site data is needed.
