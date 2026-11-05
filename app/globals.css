@@ -456,6 +456,7 @@ textarea.field { resize: vertical; min-height: 80px; }
 .exam-row .ec { font-size: .68rem; color: #33566a; }
 .exam-row .et { font-size: .88rem; }
 .exam-row .ed { font-size: .8rem; font-weight: 600; color: #7a5a1f; white-space: nowrap; }
+.exam-row .eday { display: block; font-size: .62rem; font-weight: 400; color: var(--ink-soft); }
 .exam-row .es { font-size: .64rem; color: var(--ink-soft); text-align: right; }
 @media (max-width: 640px) {
   .exam-row { grid-template-columns: 1fr auto; }

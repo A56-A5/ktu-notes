@@ -294,7 +294,15 @@ export default function Page() {
       const n = nodesRef.current.find((x) => x.id === id);
       if (!n) return;
       const subj = subjectOf(nodesRef.current, id);
-      if (subj) setSubjectId(subj.id);
+      if (subj) {
+        setSubjectId(subj.id);
+      } else {
+        // Notes that live directly under the semester (e.g. the seeded exam
+        // timetable) have no subject of their own - open the semester shelf so
+        // the note has somewhere to render.
+        const sem = ancestors(nodesRef.current, id).find((a) => a.type === 'semester');
+        setSubjectId(sem ? sem.id : null);
+      }
       setSelectedId(n.type === 'semester' ? null : id);
       if (n.type === 'semester') {
         setSemesterId(n.id);

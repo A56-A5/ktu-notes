@@ -5,7 +5,7 @@ import {
   CalendarDays,
 } from 'lucide-react';
 import { childrenOf, descendants, isNote, progressOf, relativeTime, plainText } from '../lib/tree';
-import { examInfo, formatExamDate, EXAM_SESSIONS } from '../lib/syllabus';
+import { examInfo, formatExamDate } from '../lib/syllabus';
 
 const ICON = { folder: Folder, module: Layers, topic: Hash, note: FileText, resource: Paperclip, subject: BookOpen };
 
@@ -51,12 +51,10 @@ export default function FolderView({
           {isSubject && exam && (
             <span
               className="badge exam"
-              title={`${EXAM_SESSIONS[exam.session] || exam.session || 'Session to be announced'}${
-                exam.provisional ? ' - provisional date' : ''
-              }`}
+              title={`Slot ${exam.slot || '?'}${exam.paperCode ? ` · paper ${exam.paperCode}` : ''}`}
             >
               <CalendarDays size={11} /> Exam {formatExamDate(exam.date)}
-              {exam.provisional ? ' (provisional)' : ''}
+              {exam.slot ? ` · Slot ${exam.slot}` : ''}
             </span>
           )}
           <span className="badge">{noteCount} notes</span>

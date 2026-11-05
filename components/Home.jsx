@@ -5,7 +5,7 @@ import {
   CalendarDays,
 } from 'lucide-react';
 import { childrenOf, descendants, isNote, progressOf, relativeTime, breadcrumbText, plainText } from '../lib/tree';
-import { examInfo, formatExamDate } from '../lib/syllabus';
+import { examInfo, formatExamDate, formatExamDay } from '../lib/syllabus';
 
 const TONES = ['', 'blue', 'green', 'pink', 'violet'];
 
@@ -152,18 +152,20 @@ export default function Home({
             {examRows.map(({ subject, exam }) => (
               <li key={subject.id}>
                 <button className="exam-row" onClick={() => onOpenSubject(subject.id)}>
-                  <span className="ec mono">{subject.code || 'SUBJECT'}</span>
+                  <span className="ec mono">Slot {exam.slot || '?'}</span>
                   <span className="et">{subject.title}</span>
-                  <span className="ed">{formatExamDate(exam.date)}</span>
-                  <span className="es mono">{exam.session || ''}</span>
+                  <span className="ed">
+                    {formatExamDate(exam.date)}
+                    <span className="eday">{formatExamDay(exam.date)}</span>
+                  </span>
+                  <span className="es mono">{exam.paperCode || subject.code || ''}</span>
                 </button>
               </li>
             ))}
           </ul>
           <p className="kbd-hint" style={{ marginBottom: 0 }}>
-            {examRows.some((r) => r.exam.provisional)
-              ? 'Provisional - correct them in the Exam Schedule note under the semester, or per subject.'
-              : 'Dates come from the Exam Schedule note under the semester; a subject’s own date wins.'}
+            Slots A-E from the Exam Schedule note under Semester 5. Codes are the printed timetable codes
+            (PBCDT504, PECDT525 differ from the subject codes); a subject's own exam date wins over the table.
           </p>
         </section>
       )}
@@ -209,8 +211,9 @@ export default function Home({
               <div className="meta" style={{ marginTop: 4 }}>
                 <span>{s.accessed ? `opened ${relativeTime(s.accessed)}` : 'not opened yet'}</span>
                 {exam && (
-                  <span className="exam-line" title={exam.provisional ? 'Provisional date' : 'Exam date'}>
+                  <span className="exam-line" title={exam.slot ? `Slot ${exam.slot}` : 'Exam date'}>
                     <CalendarDays size={11} /> {formatExamDate(exam.date)}
+                    {exam.slot ? ` · ${exam.slot}` : ''}
                   </span>
                 )}
               </div>
