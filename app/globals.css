@@ -574,6 +574,7 @@ textarea.field { resize: vertical; min-height: 80px; }
   border: 1.4px solid #1f1b16;
 }
 .ProseMirror pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+.ProseMirror pre::spelling-error, .ProseMirror pre *::spelling-error, .ProseMirror code::spelling-error { text-decoration: none; }
 .ProseMirror hr { border: 0; border-top: 2px dashed var(--line); margin: 1.4em 0; }
 .ProseMirror a { color: var(--blue-deep); text-decoration: underline; text-underline-offset: 2px; }
 .ProseMirror table { border-collapse: collapse; width: 100%; margin: .8em 0; font-size: .9rem; }

@@ -207,7 +207,7 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
       immediatelyRender: false,
       content: html || '',
       extensions: [
-        StarterKit.configure({ codeBlock: false, heading: { levels: [1, 2, 3, 4] } }),
+        StarterKit.configure({ codeBlock: false, code: { HTMLAttributes: { spellcheck: 'false' } }, heading: { levels: [1, 2, 3, 4] } }),
         Underline,
         Link.configure({ openOnClick: false, autolink: true, HTMLAttributes: { rel: 'noopener noreferrer' } }),
         NoteImageExt.configure({ inline: false, allowBase64: false }),
@@ -219,7 +219,7 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
         TableCell,
         Placeholder.configure({ placeholder: 'Start writing… use the toolbar for headings, lists, tables, images and equations.' }),
         Highlight,
-        CodeBlockLowlight.configure({ lowlight }),
+        CodeBlockLowlight.configure({ lowlight, HTMLAttributes: { spellcheck: 'false' } }),
         MathRender,
       ],
       editorProps: {
