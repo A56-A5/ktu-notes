@@ -115,8 +115,8 @@ export default function CloudPanel({
           </div>
 
           <div className="note-box" style={{ marginTop: 14 }}>
-            <Zap size={13} style={{ verticalAlign: -2 }} /> Edits push about 1.4 s after you stop typing, and the app
-            checks for other people’s edits every 20 s while the tab is open. Images go to the public
+            <Zap size={13} style={{ verticalAlign: -2 }} /> Edits push about 5 s after you stop typing, and the app
+            checks for other people’s edits every minute while the tab is open. Images go to the public
             <code> note-assets</code> bucket.
           </div>
 

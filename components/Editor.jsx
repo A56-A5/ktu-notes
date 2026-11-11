@@ -21,10 +21,11 @@ import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough, Heading1, Heading2, Heading3,
   List, ListOrdered, ListChecks, Quote, Minus, Link2, Code, SquareCode, Table2,
   ImagePlus, Sigma, Undo2, Redo2, Save, Maximize2, Minimize2, Trash2, Copy, CheckCircle2,
-  Circle, ArrowLeft, AlignLeft, AlignCenter, AlignRight, X, Captions, Rows3, Columns3,
+  Circle, ArrowLeft, AlignLeft, AlignCenter, AlignRight, X, Captions, Rows3, Columns3, Pencil,
 } from 'lucide-react';
 import { putAsset, getAsset } from '../lib/db';
 import { uid } from '../lib/tree';
+import { renderMathHtml } from '../lib/math-render';
 import { useUI } from './ui';
 import { relativeTime } from '../lib/tree';
 
@@ -100,6 +101,9 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
   const [html, setHtml] = useState(null);
   const [status, setStatus] = useState('Saved');
   const [full, setFull] = useState(false);
+  // Notes open read-only so hyperlinks are clickable; Edit (or a click on the
+  // text) switches to the writing view. An empty note starts in Edit.
+  const [editing, setEditing] = useState(() => !String(node.body || '').trim());
   const [title, setTitle] = useState(node.title);
   const [words, setWords] = useState(0);
   const map = useRef({});
@@ -154,6 +158,30 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
     onSave(body);
     setStatus('Saved');
   }, [onSave, serialize]);
+
+  // Static copy of the note for the read view: links open in a new tab and
+  // $…$ equations are rendered with KaTeX.
+  const readHtml = useMemo(() => {
+    if (!html) return '';
+    const withTargets = html.replace(
+      /<a (?![^>]*target=)/g,
+      '<a target="_blank" rel="noopener noreferrer" '
+    );
+    return renderMathHtml(withTargets);
+  }, [html]);
+
+  const enterEdit = useCallback(() => setEditing(true), []);
+  const leaveEdit = useCallback(() => {
+    flush();
+    setEditing(false);
+  }, [flush]);
+
+  const onReadClick = (e) => {
+    if (e.target.closest('a')) return; // let the hyperlink open
+    const sel = window.getSelection();
+    if (sel && String(sel).trim()) return; // keep text selection / copying working
+    enterEdit();
+  };
 
   const addImage = useCallback(
     async (file) => {
@@ -309,7 +337,18 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
             aria-label="Note title"
           />
           <div className="note-actions">
-            <button className="btn xs" onClick={flush}><Save size={12} /> Save</button>
+            {editing ? (
+              <>
+                <button className="btn xs primary" onClick={leaveEdit}>
+                  <CheckCircle2 size={12} /> Done - back to reading
+                </button>
+                <button className="btn xs" onClick={flush}><Save size={12} /> Save</button>
+              </>
+            ) : (
+              <button className="btn xs primary" onClick={enterEdit}>
+                <Pencil size={12} /> Edit
+              </button>
+            )}
             <button className="btn xs" onClick={() => onToggleProgress?.(node.id)}>
               {node.progress === 'done' ? <CheckCircle2 size={12} /> : <Circle size={12} />}
               {node.progress === 'done' ? 'Studied' : 'Mark studied'}
@@ -320,9 +359,16 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
             <button className="btn xs" onClick={() => onDuplicate?.(node.id)}><Copy size={12} /> Duplicate</button>
             <button className="btn xs" onClick={() => onOpenMove?.(node)}>Move</button>
             <button className="btn xs danger" onClick={() => onDelete?.(node)}><Trash2 size={12} /> Delete</button>
+            {!editing && (
+              <span className="kbd-hint" style={{ marginLeft: 4 }}>
+                reading mode · click the text or Edit to write · links open in a new tab
+              </span>
+            )}
           </div>
         </div>
 
+        {editing ? (
+          <>
         <div className="toolbar" role="toolbar" aria-label="Formatting">
           <div className="group">
             <B title="Undo" on={() => c().undo().run()} disabled={!editor?.can().undo()}><Undo2 size={14} /></B>
@@ -369,6 +415,15 @@ export default function NoteEditor({ node, onSave, onTitle, onBack, onDelete, on
         <div className="editor-wrap">
           <EditorContent editor={editor} />
         </div>
+          </>
+        ) : (
+          <div
+            className="note-read ProseMirror"
+            onClick={onReadClick}
+            onDoubleClick={enterEdit}
+            dangerouslySetInnerHTML={{ __html: readHtml }}
+          />
+        )}
         <input
           ref={fileRef}
           type="file"

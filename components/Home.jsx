@@ -70,8 +70,9 @@ export default function Home({
         <div className="kicker">APJ Abdul Kalam Technological University · 2024 Scheme</div>
         <h2>Semester 5 notebook</h2>
         <p>
-          B.Tech Computer Science and Engineering. Five subjects, four modules each, and a place for every
-          topic, diagram and half-finished thought. Everything here is yours to edit.
+          B.Tech Computer Science and Engineering. Five theory courses with four modules each, the two lab
+          manuals experiment by experiment, and a place for every topic, diagram and half-finished thought.
+          Everything here is yours to edit.
         </p>
         <div className="stats">
           <div className="stat"><b>{stats.subjects}</b>subjects</div>
@@ -129,7 +130,7 @@ export default function Home({
         <div className="paper white torn-c" style={{ marginBottom: 22 }}>
           <h3 className="hand" style={{ fontSize: '1.5rem', margin: '0 0 6px' }}>No subjects in this notebook yet</h3>
           <p className="muted" style={{ fontSize: '.9rem', margin: '0 0 14px' }}>
-            Add a subject, import a JSON/ZIP file, or restore the five default Semester 5 subjects.
+            Add a subject, import a JSON/ZIP file, or restore the default Semester 5 subjects.
           </p>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button className="btn primary" onClick={onAddSubject}><Plus size={14} /> Add subject</button>

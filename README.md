@@ -2,13 +2,15 @@
 
 A personal semester notebook for **APJ Abdul Kalam Technological University, B.Tech Computer Science and Engineering, 2024 Scheme, Semester 5**.
 
-It opens with the five requested subjects, four modules and a syllabus entry each, and every node is editable. The visual language is deliberately scrapbook-like: torn paper, masking tape, binder rings, ruled note sheets and handwritten headings. This is a working local-first application, not a mockup.
+It opens with the seven requested subjects, four modules and a syllabus entry each (the two lab courses instead carry their experiment list), and every node is editable. The visual language is deliberately scrapbook-like: torn paper, masking tape, binder rings, ruled note sheets and handwritten headings. This is a working local-first application, not a mockup.
 
 ## What it does
 
-- **Home page** with the five subjects (`PECDT525 Data Mining`, `PCCST501 Computer Networks`, `PCCST502 DAA`, `PCCDT503 Data Analytics`, `PBCDT504 Big Data Processing`), search, pinned subjects, recently opened items, note/module counts and study progress. Data Mining is pinned and first.
+- **Home page** with the seven subjects (`PECDT525 Data Mining`, `PCCST501 Computer Networks`, `PCCST502 DAA`, `PCCDT503 Data Analytics`, `PBCDT504 Big Data Processing`, `PCCSL507 Networks Lab`, `PCCDL508 Data Analytics Lab`), search, pinned subjects, recently opened items, note/module counts and study progress. Nothing is pinned by default.
 - **Unlimited recursive tree** of semesters, subjects, folders, modules, topics, subtopics, notes and resources. Add, rename, edit, delete, duplicate, move, reorder, expand/collapse and drag-and-drop. Breadcrumbs everywhere.
+- **Read mode first**: a note opens as a finished page - links are clickable and open in a new tab. Click the text (or **Edit**) to switch to the writing view, then **Done** to go back.
 - **Rich-text notes** (TipTap): bold/italic/underline/strike/highlight, headings, lists, checklists, tables, quotes, dividers, links, inline code, highlighted code blocks, LaTeX inline and block equations.
+- **Two lab manuals as notes**: `PCCSL507 Networks Lab` (12 experiments) and `PCCDL508 Data Analytics Lab` (15 experiments), each experiment written as aim → theory → algorithm → code → terminal commands. The R experiments implement their statistics and classifiers from scratch instead of calling built-in functions, and the multi-user TCP chat server is built with `fork()`, a shared-memory ring buffer and `select()`.
 - **Images**: upload, paste, drag/drop, resize, align, caption, remove. Stored as blobs (never Base64 in the database) and referenced as `asset:<id>`.
 - **Local-first persistence** in IndexedDB, with a localStorage fallback. Data survives refresh and restart.
 - **Optional shared Supabase sync** - no login: everyone who opens the app edits the same notebook, and rows are open to the anon key by design.
@@ -39,7 +41,7 @@ This project uses a deliberately login-free, shared notebook. There is no sign-u
    NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable or anon key>
    ```
    Only the publishable/anon key belongs in the browser, and it is safe to ship because the tables are world-writable. Never put the service-role key in a `NEXT_PUBLIC_` variable.
-4. Restart `npm run dev`. The header pill shows the sync state; no account step is needed. Edits push ~1.4 s after they settle, and other people’s edits are pulled every 20 s while the tab is visible.
+4. Restart `npm run dev`. The header pill shows the sync state; no account step is needed. Edits push ~5 s after they settle, and other people’s edits are pulled every minute while the tab is visible.
 
 **Notebook modes:** the header pill opens a panel with two modes. *Shared notebook* keeps this browser in sync with everyone else who opens the site. *Local only* stops all uploads, downloads and polling, so the notebook never leaves this browser (use it to keep a private copy or to work offline); switching back merges the local edits with the cloud copy.
 

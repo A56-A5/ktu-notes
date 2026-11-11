@@ -612,6 +612,11 @@ textarea.field { resize: vertical; min-height: 80px; }
 }
 .ProseMirror .tableWrapper { overflow-x: auto; }
 
+/* read-only note view (components/Editor.jsx) */
+.note-read { cursor: text; min-height: 40vh; }
+.note-read a { cursor: pointer; }
+.note-read pre { cursor: text; }
+
 /* highlight.js - warm paper-friendly code colours */
 .hljs-comment, .hljs-quote { color: #9a8b73; font-style: italic; }
 .hljs-keyword, .hljs-selector-tag, .hljs-literal { color: #e0a86a; }

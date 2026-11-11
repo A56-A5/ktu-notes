@@ -17,7 +17,7 @@ import { Menu, useUI } from '../components/ui';
 import { useStore } from '../lib/store';
 import { ancestors, childrenOf, descendants, isFolder, isNote, searchNodes, subjectOf, uid, progressOf } from '../lib/tree';
 import { buildExport, downloadJSON, exportZip, safeName } from '../lib/io';
-import { buildSeed } from '../lib/seed';
+import { buildSeed, SUBJECT_DEFS } from '../lib/seed';
 import {
   configured,
   WORKSPACE,
@@ -79,8 +79,18 @@ export default function Page() {
   const storeRef = useRef(store);
   storeRef.current = store;
   const seedIdsRef = useRef(null);
+  // First-sync rule: default nodes the shared notebook no longer has are not
+  // resurrected. Two kinds of official default content are excluded from that
+  // rule so they still reach the cloud: the lab courses (new in this release)
+  // and the generated exam timetable.
+  const keepOnFirstSync = (n) =>
+    n.category === 'exams' ||
+    SUBJECT_DEFS.filter((d) => d.lab).some(
+      (d) => n.id === `sub-${d.key}` || n.id.startsWith(`${d.key}-`)
+    );
   const seedIds = () => {
-    if (!seedIdsRef.current) seedIdsRef.current = new Set(buildSeed().map((n) => n.id));
+    if (!seedIdsRef.current)
+      seedIdsRef.current = new Set(buildSeed().filter((n) => !keepOnFirstSync(n)).map((n) => n.id));
     return seedIdsRef.current;
   };
 
@@ -205,7 +215,8 @@ export default function Page() {
     );
   };
 
-  // Push after edits, ~1.4 s after they settle.
+  // Push after edits, once they have settled for a few seconds, so the header
+  // is not flipping to "Syncing" while you type.
   useEffect(() => {
     if (!sharing || !store.ready) return;
     if (skipPush.current) {
@@ -213,7 +224,7 @@ export default function Page() {
       return;
     }
     clearTimeout(pushTimer.current);
-    pushTimer.current = setTimeout(() => runSync(), 1400);
+    pushTimer.current = setTimeout(() => runSync(), 5000);
     return () => clearTimeout(pushTimer.current);
   }, [nodes, store.ready, runSync]);
 
@@ -223,7 +234,7 @@ export default function Page() {
     const tick = () => {
       if (document.visibilityState === 'visible' && navigator.onLine !== false) runSync();
     };
-    const id = setInterval(tick, 20000);
+    const id = setInterval(tick, 60000);
     document.addEventListener('visibilitychange', tick);
     window.addEventListener('online', tick);
     return () => {
