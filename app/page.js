@@ -32,6 +32,19 @@ import {
 } from '../lib/cloud';
 import { hooks, listAssets } from '../lib/db';
 
+// The merge result only needs uploading when this browser actually holds
+// something newer than the last successful push. Without this guard every
+// 60-second poll rewrote the whole notebook (400+ rows and 300+ bodies) even
+// with nothing changed, which kept the tab busy for no reason.
+function needsPush(list, known) {
+  if (!known || list.length !== known.size) return true;
+  for (const n of list) {
+    const prev = known.get(n.id);
+    if (prev === undefined || (n.modified || 0) > prev) return true;
+  }
+  return false;
+}
+
 export default function Page() {
   const store = useStore();
   const ui = useUI();
@@ -145,7 +158,7 @@ export default function Page() {
           skipPush.current = true;
           storeRef.current.replaceAll(next);
         }
-        await push(next, { knownIds: known.current });
+        if (needsPush(next, known.current)) await push(next, { knownIds: known.current });
       }
       known.current = new Map(next.map((n) => [n.id, n.modified || 0]));
       setSync({
